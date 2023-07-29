@@ -1,0 +1,26 @@
+@import url("https://fonts.bunny.net/css?family=Nunito");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+main {
+  width: 1080px;
+  margin: 0 auto;
+}
+
+body {
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+h1 {
+  font-size: 1rem;
+}
+
+/*# sourceMappingURL=app.css.map */
