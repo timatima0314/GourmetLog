@@ -17,7 +17,5 @@ Route::get('/{any?}', function () {
     return view('vue');
 })->where('any', '^(?!api\/)[\/\w\.-]*');
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
