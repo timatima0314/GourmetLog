@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 const BASE_URL = "/";
 import Home from "./page/Home.vue";
+import Dashboard from "./page/Dashboard.vue";
 import Login from "./page/Login.vue"
 import SingUp from "./page/SingUp.vue";
 import CategoryRegister from "./page/CategoryRegister.vue";
@@ -8,7 +9,7 @@ import CategoryEdit from "./page/CategoryEdit.vue";
 import Confirmation from "./page/Confirmation.vue";
 import Ditail from "./page/Ditail.vue";
 import List from "./page/List.vue";
-import RegisterEdit from "./page/RegisterEdit.vue";
+import ShopRegisterEdit from "./page/ShopRegisterEdit.vue";
 import NotFound from "./page/NotFound.vue";
 
 const routes = [
@@ -17,6 +18,12 @@ const routes = [
         name: 'Home',
         component: Home,
     },
+    {
+        path: '/dash_board',
+        name: 'Dashboard',
+        component: Dashboard,
+    },
+
     {
         path: "/login",
         name: "Login",
@@ -53,9 +60,9 @@ const routes = [
         component: List
     },
     {
-        path: "/register_edit",
-        name: "RegisterEdit",
-        component: RegisterEdit
+        path: "/shop_register_edit",
+        name: "ShopRegisterEdit",
+        component: ShopRegisterEdit
     },
     { path: '/:catchAll(.*)', component: NotFound }
 ];

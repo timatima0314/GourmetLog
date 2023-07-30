@@ -8,22 +8,32 @@
 a {
   text-decoration: none;
   color: inherit;
+  width: 100%;
+  display: block;
+}
+
+.wrapeer {
+  display: flex;
 }
 
 main {
-  width: 1080px;
-  margin: 0 auto;
+  width: 980px;
+  margin: 5rem auto;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
 }
 
 body {
   font-family: "Noto Sans JP", sans-serif;
 }
 
-h1 {
-  font-size: 2rem;
-}
-
-input {
+input,
+select {
   padding: 0.5rem;
   font-size: 1rem;
   width: 20rem;
@@ -32,12 +42,41 @@ input {
 }
 
 button {
-  background-color: blue;
   color: #fff;
   border-radius: 1rem;
   padding: 0.3rem 0.8rem;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.input__box.col {
+  display: block;
+}
+.input__box.column {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.input__box button {
+  margin-left: 1rem;
+  color: #000;
+  background-color: rgb(195, 184, 184);
+}
+
+.ditail {
+  background-color: green;
+}
+
+.edit {
+  background-color: blue;
+}
+
+.delet {
+  background-color: red;
+}
+
+.back {
+  background-color: #fff;
 }
 
 /*# sourceMappingURL=app.css.map */
