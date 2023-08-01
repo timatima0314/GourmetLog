@@ -1,59 +1,9 @@
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-import SideBar from "../components/SideBar.vue"
-
-export default defineComponent({
-    components: {
-        SideBar,
-    },
-
-    setup() {
-        const rows = ref([
-            {
-                table_cells: [
-                    {
-                        id: 44,
-                        shopName: "ddd",
-                        category: "日本料理",
-                        review: "あああ",
-                        comment: "ああああ",
-                    },
-                ],
-            },
-            {
-                table_cells: [
-                    {
-                        id: 44,
-                        shopName: "ddd",
-                        category: "日本料理",
-                        review: "あああ",
-                        comment: "ああああ",
-                    },
-                ],
-            },
-            {
-                table_cells: [
-                    {
-                        id: 44,
-                        shopName: "ddd",
-                        category: "日本料理",
-                        review: "あああ",
-                        comment: "ああああ",
-                    },
-                ],
-            },
-        ]);
-        return {
-            rows,
-        };
-    },
-});
-</script>
 <template>
     <div class="wrapeer">
         <SideBar />
         <main>
             <h1 class="page__title">お店リスト</h1>
+            <button @click="get">get</button>
             <form>
                 <div class="input__box col">
                     <input type="text" />
@@ -74,7 +24,7 @@ export default defineComponent({
                             <th class="list__table-th">削除</th>
                         </tr>
                     </thead>
-                    <template v-for="tr in rows" :key="tr.index">
+                    <!-- <template v-for="tr in rows" :key="tr.index">
                         <tr>
                             <template
                                 v-for="cell in tr.table_cells"
@@ -106,12 +56,54 @@ export default defineComponent({
                                 </td>
                             </template>
                         </tr>
+                    </template> -->
+                    <template v-for="item in shopList" :key="item.index">
+                        <tr>
+                            <td class="list__table-td">
+                                <p>{{ item.id }}</p>
+                            </td>
+                            <td class="list__table-td">
+                                <p>{{ item.name }}</p>
+                            </td>
+                            <td class="list__table-td">
+                                <p>{{ item.name_katakana }}</p>
+                            </td>
+                            <td class="list__table-td">
+                                <p>{{ item.review }}</p>
+                            </td>
+                            <td class="list__table-td">
+                                <p>{{ item.food_picture }}</p>
+                            </td>
+                            <td class="list__table-td">
+                                <button class="ditail">詳細</button>
+                            </td>
+                            <td class="list__table-td">
+                                <button class="edit">編集</button>
+                            </td>
+                            <td class="list__table-td">
+                                <button class="delet">削除</button>
+                            </td>
+                        </tr>
                     </template>
                 </table>
             </div>
         </main>
     </div>
 </template>
+<script lang="ts" setup>
+import axios from "axios";
+import { defineComponent, ref } from "vue";
+import SideBar from "../components/SideBar.vue";
+
+const shopList = ref();
+const get = async () => {
+    const { data } = await axios.get(`/api/gourmet/`);
+    console.log(data);
+    shopList.value = data;
+    return data;
+};
+</script>
+
 <style lang="scss" scoped>
 .page__title {
     margin-bottom: 2rem;
@@ -121,6 +113,7 @@ export default defineComponent({
     margin-top: 3rem;
     border: 1px solid #000;
     border-bottom: none;
+    font-size: 1rem;
 }
 .list__table-inner {
     width: 100%;

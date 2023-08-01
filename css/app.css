@@ -67,7 +67,8 @@ button {
   background-color: green;
 }
 
-.edit {
+.edit,
+.register {
   background-color: blue;
 }
 
