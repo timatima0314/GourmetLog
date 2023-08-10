@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('/gourmet', RestaurantController::class);
-
+Route::post('/updata/{id}', [RestaurantController::class, 'updated']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

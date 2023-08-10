@@ -7,7 +7,7 @@ type RestaurantData = {
     name: string,
     name_katakana: string,
     review: number,
-    food_picture: string,
+    food_picture: any,
     map_url: string,
     comment: string,
     tel: string,

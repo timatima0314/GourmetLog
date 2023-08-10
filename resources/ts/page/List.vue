@@ -3,7 +3,6 @@
         <SideBar />
         <main>
             <h1 class="page__title">お店リスト</h1>
-            <button @click="get">get</button>
             <form>
                 <div class="input__box col">
                     <input type="text" />
@@ -14,50 +13,27 @@
                 <table class="list__table-inner">
                     <thead class="list__table-thead">
                         <tr class="">
-                            <th class="list__table-th">ID</th>
+                            <th style="width: 3rem" class="list__table-th">
+                                ID
+                            </th>
                             <th class="list__table-th">店名</th>
                             <th class="list__table-th">カテゴリー</th>
-                            <th class="list__table-th">レビュー</th>
+                            <th style="width: 4rem" class="list__table-th">
+                                レビュー
+                            </th>
                             <th class="list__table-th">コメント</th>
-                            <th class="list__table-th">詳細</th>
-                            <th class="list__table-th">編集</th>
-                            <th class="list__table-th">削除</th>
+                            <th style="width: 5rem" class="list__table-th">
+                                詳細
+                            </th>
+                            <th style="width: 5rem" class="list__table-th">
+                                編集
+                            </th>
+                            <th style="width: 5rem" class="list__table-th">
+                                削除
+                            </th>
                         </tr>
                     </thead>
-                    <!-- <template v-for="tr in rows" :key="tr.index">
-                        <tr>
-                            <template
-                                v-for="cell in tr.table_cells"
-                                :key="cell.index"
-                            >
-                                <td class="list__table-td">
-                                    <p>{{ cell.id }}</p>
-                                </td>
-                                <td class="list__table-td">
-                                    <p>{{ cell.shopName }}</p>
-                                </td>
-                                <td class="list__table-td">
-                                    <p>{{ cell.category }}</p>
-                                </td>
-                                <td class="list__table-td">
-                                    <p>{{ cell.review }}</p>
-                                </td>
-                                <td class="list__table-td">
-                                    <p>{{ cell.comment }}</p>
-                                </td>
-                                <td class="list__table-td">
-                                    <button class="ditail">詳細</button>
-                                </td>
-                                <td class="list__table-td">
-                                    <button class="edit">編集</button>
-                                </td>
-                                <td class="list__table-td">
-                                    <button class="delet">削除</button>
-                                </td>
-                            </template>
-                        </tr>
-                    </template> -->
-                    <template v-for="item in shopList" :key="item.index">
+                    <template v-for="(item, i) in shopList" :key="item.i">
                         <tr>
                             <td class="list__table-td">
                                 <p>{{ item.id }}</p>
@@ -71,17 +47,31 @@
                             <td class="list__table-td">
                                 <p>{{ item.review }}</p>
                             </td>
-                            <td class="list__table-td">
-                                <p>{{ item.food_picture }}</p>
+                            <td class="list__table-td" style="text-align: left">
+                                <p>{{ item.comment }}</p>
                             </td>
                             <td class="list__table-td">
-                                <button class="ditail">詳細</button>
+                                <router-link to="/ditail">
+                                    <button class="ditail">詳細</button>
+                                </router-link>
                             </td>
                             <td class="list__table-td">
-                                <button class="edit">編集</button>
+                                <button
+                                    :data-index="i"
+                                    :data-id="item.id"
+                                    @click="edit"
+                                    class="edit"
+                                >
+                                    編集
+                                </button>
                             </td>
                             <td class="list__table-td">
-                                <button class="delet">削除</button>
+                                <button
+                                    class="delet"
+                                    @click="delConfOpen(item.id)"
+                                >
+                                    削除
+                                </button>
                             </td>
                         </tr>
                     </template>
@@ -91,17 +81,81 @@
     </div>
 </template>
 <script lang="ts" setup>
-import axios from "axios";
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
+import { restaurantGet, destroy } from "../../api/restaurantApi";
 import SideBar from "../components/SideBar.vue";
+import { useStore } from "../store/store";
+import * as MutationTypes from "../store/mutationTypes";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const store = useStore();
 
 const shopList = ref();
-const get = async () => {
-    const { data } = await axios.get(`/api/gourmet/`);
-    console.log(data);
-    shopList.value = data;
-    return data;
+const shopDataGet = async () => {
+    shopList.value = await restaurantGet();
 };
+const edit = (e) => {
+    const index = e.target.dataset.index;
+    const id = e.target.dataset.id;
+
+    const {
+        name,
+        name_katakana,
+        review,
+        food_picture,
+        map_url,
+        comment,
+        tel,
+        user_id,
+    } = shopList.value[index];
+    store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
+        name: name,
+        name_katakana: name_katakana,
+        review: review,
+        food_picture: food_picture,
+        map_url: map_url,
+        comment: comment,
+        tel: tel,
+        user_id: user_id,
+    });
+    router.push({
+        name: "ShopRegisterEdit",
+        query: {
+            id: id,
+        },
+    });
+};
+const delConfOpen = async (id: number) => {
+    const delConf = confirm("本当に削除してもよろしいでしょうか？");
+    if (delConf) {
+        destroy(id)
+            .then(async () => {
+                await shopDataGet();
+            })
+            .catch((Error) => {
+                throw new Error(`${Error.message}: destroyApi失敗`);
+            });
+    }
+};
+const storeClear = () => {
+    store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
+        name: "",
+        name_katakana: "",
+        review: "",
+        food_picture: "",
+        map_url: "",
+        comment: "",
+        tel: "",
+        user_id: 1,
+    });
+};
+
+onMounted(() => {
+    storeClear();
+    shopDataGet();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -113,13 +167,14 @@ const get = async () => {
     margin-top: 3rem;
     border: 1px solid #000;
     border-bottom: none;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 .list__table-inner {
     width: 100%;
     text-align: center;
     table-layout: fixed;
     border-collapse: collapse;
+    word-wrap: break-word;
 }
 .list__table-thead {
     padding: 15px;
@@ -130,6 +185,7 @@ const get = async () => {
 .list__table-th {
     border-right: 1px solid #000;
     padding: 1.2rem 0;
+
     &:last-child {
         border: none;
     }

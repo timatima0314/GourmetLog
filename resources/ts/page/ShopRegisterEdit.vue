@@ -43,9 +43,22 @@
                     <div class="input__box column">
                         <label>料理画像</label>
                         <input
-                            type="text"
+                            type="file"
                             style="border: none"
-                            v-model="form.food_picture"
+                            @change="fileSelected"
+                        />
+                        <img
+                            v-if="fileUrlEdit"
+                            alt="料理画像"
+                            width="250"
+                            height="180"
+                            :src="`storage/${fileUrlEdit}`"
+                        /><img
+                            v-else-if="fileUrl"
+                            alt="料理画像"
+                            width="250"
+                            height="180"
+                            :src="fileUrl"
                         />
                     </div>
                     <div class="input__box column">
@@ -61,7 +74,10 @@
                         <input type="text" v-model="form.comment" />
                     </div>
                     <div class="button_box">
-                        <button class="goto_confirmation_screen" @click="post">
+                        <button
+                            class="goto_confirmation_screen"
+                            @click="toConfirmation"
+                        >
                             確認画面へ
                         </button>
                     </div>
@@ -71,15 +87,25 @@
     </div>
 </template>
 <script lang="ts" setup>
-import axios from "axios";
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
+import router from "../router";
 
-const router = useRouter();
+const fileUrl = ref("");
+const fileUrlEdit = ref("");
 
+const _router = useRoute();
+const propEditId = ref();
+
+const fileSelected = (event) => {
+    const file = event.target.files[0];
+    form.food_picture = file;
+    fileUrlEdit.value = "";
+    fileUrl.value = URL.createObjectURL(file);
+};
 const form = reactive({
     name: "",
     name_katakana: "",
@@ -91,16 +117,41 @@ const form = reactive({
     user_id: 1,
 });
 const store = useStore();
-const restaurantData = computed(() => store.state.restaurantData);
-// 'user_id', 'name', 'name_katakana', 'review', 'food_picture', 'map_url', 'comment', 'tel'
-// const post = async () => {
-//     console.log(shopDate);
-//     const { data } = await axios.post(`/api/gourmet`, shopDate);
-//     return data;
-// };
-const lengths = () => {
-    console.log(store.state.restaurantData.length);
+const lengths = store.state.restaurantData.length - 1;
+const restaurantData = computed(() => {
+    return store.state.restaurantData[lengths];
+});
+const {
+    name,
+    name_katakana,
+    comment,
+    food_picture,
+    map_url,
+    review,
+    tel,
+    user_id,
+} = restaurantData.value;
+
+const listItemGet = () => {
+    form.name = name;
+    form.name_katakana = name_katakana;
+    form.review = review;
+    form.food_picture = food_picture;
+    form.map_url = map_url;
+    form.comment = comment;
+    form.tel = tel;
+    form.user_id = user_id;
 };
+
+onMounted(async () => {
+    await listItemGet();
+    propEditId.value = _router.query.id;
+    if (food_picture) {
+        propEditId.value
+            ? (fileUrlEdit.value = food_picture)
+            : (fileUrl.value = URL.createObjectURL(food_picture));
+    }
+});
 
 const clearForm = () => {
     form.name = "";
@@ -112,7 +163,7 @@ const clearForm = () => {
     form.tel = "";
     form.user_id = 1;
 };
-const post = () => {
+const toConfirmation = () => {
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: form.name,
         name_katakana: form.name_katakana,
@@ -123,7 +174,14 @@ const post = () => {
         tel: form.tel,
         user_id: 1,
     });
-    router.push("/confirmation");
+    propEditId
+        ? router.push({
+              name: "Confirmation",
+              query: {
+                  id: propEditId.value,
+              },
+          })
+        : router.push("/confirmation");
 };
 </script>
 <style lang="scss" scoped>

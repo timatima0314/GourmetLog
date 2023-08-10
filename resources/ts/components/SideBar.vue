@@ -33,19 +33,14 @@ import { useRouter } from "vue-router";
 aside {
     background-color: rgb(104, 205, 191);
     width: 250px;
-    height: 1000px;
+    min-height: 980px;
     color: #fff;
     display: flex;
     align-items: center;
     font-size: 1.2rem;
     flex-direction: column;
+    position: relative;
 }
-/* a:hover {
-    background-color: #fff;
-    color: #000;
-    width: 100%;
-    height: 100%;
-} */
 .aside__title {
     padding: 2rem 0;
 }
@@ -75,6 +70,6 @@ aside {
 }
 .asiede__logout {
     position: absolute;
-    bottom: 0;
+    bottom: 5rem;
 }
 </style>

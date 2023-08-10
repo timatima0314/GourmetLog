@@ -3,69 +3,208 @@
         <SideBar />
         <main>
             <h1 class="page__title">新規登録　確認画面</h1>
-            <div class="container column">
-                <div class="item__container">
-                    <div class="item__box">
-                        <div class="item__title">店名:</div>
-                        <div class="item__date">{{ restaurantData.name }}</div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">フリガナ:</div>
-                        <div class="item__date">
-                            {{ restaurantData.name_katakana }}
+            <form @submit.prevent enctype="multipart/form-data">
+                <div class="container column">
+                    <div class="item__container">
+                        <div class="item__box">
+                            <div class="item__title">店名:</div>
+                            <div class="item__date">
+                                {{ restaurantData.name }}
+                            </div>
                         </div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">カテゴリー:</div>
-                        <div class="item__date">日本料理</div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">レビュー:</div>
-                        <div class="item__date">
-                            {{ restaurantData.review }}
+                        <div class="item__box">
+                            <div class="item__title">フリガナ:</div>
+                            <div class="item__date">
+                                {{ restaurantData.name_katakana }}
+                            </div>
                         </div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">料理写真:</div>
-                        <div class="item__date">
-                            {{ restaurantData.food_picture }}
+                        <div class="item__box">
+                            <div class="item__title">カテゴリー:</div>
+                            <div class="item__date">日本料理</div>
                         </div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">Google Map URL:</div>
-                        <div class="item__date">
-                            {{ restaurantData.map_url }}
+                        <div class="item__box">
+                            <div class="item__title">レビュー:</div>
+                            <div class="item__date">
+                                {{ restaurantData.review }}
+                            </div>
                         </div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">電話番号:</div>
-                        <div class="item__date">{{ restaurantData.tel }}</div>
-                    </div>
-                    <div class="item__box">
-                        <div class="item__title">コメント:</div>
-                        <div class="item__date">
-                            {{ restaurantData.comment }}
+                        <div class="item__box column">
+                            <div class="item__title">料理写真:</div>
+                            <div class="item__date">
+                                <!-- <img
+                                    v-if="fileUrl"
+                                    width="250"
+                                    height="180"
+                                    :src="fileUrl"
+                                /> -->
+                                <img
+                                    v-if="fileUrlEdit"
+                                    alt="料理画像"
+                                    width="250"
+                                    height="180"
+                                    :src="`storage/${fileUrlEdit}`"
+                                /><img
+                                    v-else-if="fileUrl"
+                                    alt="料理画像"
+                                    width="250"
+                                    height="180"
+                                    :src="fileUrl"
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div class="button__box">
-                        <button class="fix" @click="">修正する</button>
-                        <button class="register" @click="">登録する</button>
+                        <div class="item__box column">
+                            <div class="item__title">Google Map URL:</div>
+                            <div class="item__date">
+                                {{ restaurantData.map_url }}
+                            </div>
+                        </div>
+                        <div class="item__box column">
+                            <div class="item__title">電話番号:</div>
+                            <div class="item__date">
+                                {{ restaurantData.tel }}
+                            </div>
+                        </div>
+                        <div class="item__box column">
+                            <div class="item__title">コメント:</div>
+                            <div class="item__date">
+                                {{ restaurantData.comment }}
+                            </div>
+                        </div>
+                        <div class="button__box">
+                            <button class="fix" @click="previousScreen">修正する</button>
+                            <button
+                                v-if="!propEditId"
+                                class="register"
+                                @click="shopDataCreate"
+                            >
+                                登録する
+                            </button>
+                            <button
+                                v-else
+                                class="register"
+                                @click="update(propEditId)"
+                            >
+                                更新する
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </main>
     </div>
 </template>
 <script lang="ts" setup>
 import SideBar from "../components/SideBar.vue";
+import { restaurantCreate, restaurantUpdate } from "../../api/restaurantApi";
 import { useStore } from "../store/store";
-import { computed } from "vue";
+import * as MutationTypes from "../store/mutationTypes";
+import router from "../router";
+import { useRoute } from "vue-router";
+import { computed, ref, onMounted } from "vue";
+const _router = useRoute();
+const propEditId = ref();
 const store = useStore();
+const fileUrl = ref("");
+const fileUrlEdit = ref("");
+
 const length = store.state.restaurantData.length - 1;
-const restaurantData = computed(() => store.state.restaurantData[length]);
-const fff = () => {
-    const oo = store.state.restaurantData[2];
-    console.log(oo);
+const restaurantData = computed(() => {
+    return store.state.restaurantData[length];
+});
+const {
+    name,
+    name_katakana,
+    comment,
+    food_picture,
+    map_url,
+    review,
+    tel,
+    user_id,
+} = restaurantData.value;
+const config = {
+    headers: {
+        "content-type": "multipart/form-data",
+    },
+};
+const storeClear = () => {
+    store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
+        name: "",
+        name_katakana: "",
+        review: "",
+        food_picture: "",
+        map_url: "",
+        comment: "",
+        tel: "",
+        user_id: 1,
+    });
+};
+const update = async (id: number) => {
+    await restaurantUpdate({
+        name,
+        name_katakana,
+        review,
+        food_picture,
+        map_url,
+        comment,
+        tel,
+        user_id,
+        config,
+        id,
+    })
+        .then(async () => {
+            await storeClear();
+            router.push("/list");
+        })
+        .catch(() => {});
+};
+
+const shopDataCreate = async () => {
+    await restaurantCreate({
+        name,
+        name_katakana,
+        comment,
+        food_picture,
+        map_url,
+        review,
+        tel,
+        user_id,
+        config,
+    })
+        .then(async () => {
+            await storeClear();
+            router.push("/list");
+        })
+        .catch(() => {});
+};
+const imgShow = () => {
+    if (propEditId.value) {
+        const editJudge = typeof food_picture === "string";
+        if (editJudge) {
+            fileUrlEdit.value = food_picture;
+        } else {
+            fileUrlEdit.value = "";
+            fileUrl.value = URL.createObjectURL(food_picture);
+        }
+    } else {
+        fileUrl.value = URL.createObjectURL(food_picture);
+    }
+};
+
+onMounted(() => {
+    propEditId.value = _router.query.id;
+
+    imgShow();
+});
+
+const previousScreen = () => {
+    propEditId
+        ? router.push({
+              name: "ShopRegisterEdit",
+              query: {
+                  id: propEditId.value,
+              },
+          })
+        : router.push("/shop_register_edit");
 };
 </script>
 <style lang="scss" scoped>
@@ -90,8 +229,12 @@ main {
 .item__box {
     margin-bottom: 2rem;
     display: flex;
+    &.column {
+        flex-direction: column;
+        align-items: baseline;
+    }
 }
-.button__box{
+.button__box {
     display: flex;
     justify-content: space-between;
 }
