@@ -51,9 +51,14 @@
                                 <p>{{ item.comment }}</p>
                             </td>
                             <td class="list__table-td">
-                                <router-link to="/ditail">
-                                    <button class="ditail">詳細</button>
-                                </router-link>
+                                <button
+                                    class="ditail"
+                                    :data-index="i"
+                                    :data-id="item.id"
+                                    @click="goDitail"
+                                >
+                                    詳細
+                                </button>
                             </td>
                             <td class="list__table-td">
                                 <button
@@ -127,6 +132,38 @@ const edit = (e) => {
         },
     });
 };
+const goDitail = (e) => {
+    const index = e.target.dataset.index;
+    const id = e.target.dataset.id;
+
+    const {
+        name,
+        name_katakana,
+        review,
+        food_picture,
+        map_url,
+        comment,
+        tel,
+        user_id,
+    } = shopList.value[index];
+    store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
+        name: name,
+        name_katakana: name_katakana,
+        review: review,
+        food_picture: food_picture,
+        map_url: map_url,
+        comment: comment,
+        tel: tel,
+        user_id: user_id,
+    });
+    router.push({
+        name: "Ditail",
+        query: {
+            id: id,
+        },
+    });
+};
+
 const delConfOpen = async (id: number) => {
     const delConf = confirm("本当に削除してもよろしいでしょうか？");
     if (delConf) {
@@ -143,7 +180,7 @@ const storeClear = () => {
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: "",
         name_katakana: "",
-        review: "",
+        review: 1,
         food_picture: "",
         map_url: "",
         comment: "",

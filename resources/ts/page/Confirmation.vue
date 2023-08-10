@@ -53,8 +53,17 @@
                             </div>
                         </div>
                         <div class="item__box column">
-                            <div class="item__title">Google Map URL:</div>
+                            <div class="item__title">Google Map:</div>
                             <div class="item__date">
+                                <iframe
+                                    :src="`https://maps.google.co.jp/maps?output=embed&q=${ restaurantData.map_url }`"
+                                    width="300"
+                                    height="200"
+                                    style="border: 0"
+                                    loading="lazy"
+                                >
+                                </iframe>
+
                                 {{ restaurantData.map_url }}
                             </div>
                         </div>

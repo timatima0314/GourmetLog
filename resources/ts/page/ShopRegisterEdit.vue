@@ -62,7 +62,7 @@
                         />
                     </div>
                     <div class="input__box column">
-                        <label>Google Map URL</label>
+                        <label>Google Map キーワード</label>
                         <input type="text" v-model="form.map_url" />
                     </div>
                     <div class="input__box column">
