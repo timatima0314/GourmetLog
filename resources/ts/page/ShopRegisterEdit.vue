@@ -172,7 +172,7 @@ const toConfirmation = () => {
         map_url: form.map_url,
         comment: form.comment,
         tel: form.tel,
-        user_id: 1,
+        user_id: 2,
     });
     propEditId
         ? router.push({

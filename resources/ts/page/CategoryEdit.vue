@@ -1,7 +1,6 @@
 <template>
     <div class="wrapeer">
         <SideBar />
-
         <main>
             <h1 class="page__title">カテゴリー編集</h1>
             <div class="container">
@@ -13,13 +12,22 @@
                                 class="edit__input"
                                 type="text"
                                 name="content"
+                                v-model="categorieNameEdit"
                             />
                             <div class="error__messages">
                                 <!-- <span v-if="errorsMessages">{{ errorsMessages }}</span> -->
                             </div>
                             <div class="edit__button-wrap">
-                                <button type="button" class="back">戻る</button>
-                                <button class="edit">修正</button>
+                                <button
+                                    type="button"
+                                    class="back"
+                                    @click="previousScreen"
+                                >
+                                    戻る
+                                </button>
+                                <button class="edit" @click="updataCategory">
+                                    修正
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -29,7 +37,42 @@
     </div>
 </template>
 <script lang="ts" setup>
-import SideBar  from "../components/SideBar.vue";
+import SideBar from "../components/SideBar.vue";
+import { categorieGet, categorieUpdate } from "../../api/categorieApi";
+import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+
+const router = useRouter();
+const route = useRoute();
+
+const categorieNameEdit = ref("");
+const propEditId = ref();
+const propIndexId = ref();
+
+const editItemGet = async () => {
+    await categorieGet().then((item) => {
+        const filterData = item.filter((val) => {
+            return val.id == propEditId.value;
+        });
+        categorieNameEdit.value = filterData[0].name;
+    });
+};
+
+const updataCategory = async () => {
+    await categorieUpdate({
+        name: categorieNameEdit.value,
+        id: propEditId.value,
+    });
+    router.push("/category_register");
+};
+const previousScreen = () => {
+    router.push("/category_register");
+};
+onMounted(() => {
+    propEditId.value = route.query.id;
+    propIndexId.value = route.query.indexId;
+    editItemGet();
+});
 </script>
 <style lang="scss" scoped>
 .page__title {

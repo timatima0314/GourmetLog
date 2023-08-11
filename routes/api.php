@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('/gourmet', RestaurantController::class);
+Route::apiResource('/categorie', CategorieController::class);
+
 Route::post('/updata/{id}', [RestaurantController::class, 'updated']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
