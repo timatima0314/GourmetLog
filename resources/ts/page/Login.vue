@@ -9,7 +9,7 @@
                         <tr class="login__Form__tr">
                             <td class="loginForm__label">メールアドレス</td>
                             <td class="loginForm__input-wrap">
-                                <input type="text" />
+                                <input type="text" v-model="email" />
                             </td>
                         </tr>
                         <tr class="login__Form__tr error">
@@ -22,7 +22,7 @@
                         <tr class="login__Form__tr">
                             <td class="loginForm__label">パスワード</td>
                             <td class="loginForm__input-wrap">
-                                <input type="password" />
+                                <input type="password" v-model="password" />
                             </td>
                         </tr>
                         <tr class="login__Form__tr error">
@@ -50,7 +50,14 @@
                         <tr>
                             <td></td>
                             <td class="loginForm__button">
-                                <button>ログイン</button>
+                                <button
+                                    @click="login"
+                                    class="loginForm__login"
+                                    type="button"
+                                >
+                                    ログイン
+                                </button>
+
                                 <span>パスワードをお忘れですか？</span>
                             </td>
                         </tr>
@@ -63,6 +70,19 @@
 
 <script setup lang="ts">
 import Header from "../components/Header.vue";
+import axios from "axios";
+import { authLogin, authLogout } from "../../api/authApi";
+import { ref, onMounted } from "vue";
+import router from "../router";
+
+const auth = ref(false);
+
+const password = ref("123");
+const email = ref("testtt@example.com");
+
+const login = async () => {
+    await authLogin(email.value, password.value);
+};
 </script>
 <style lang="scss" scoped>
 .login {

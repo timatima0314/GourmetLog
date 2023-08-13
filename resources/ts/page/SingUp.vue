@@ -9,7 +9,7 @@
                         <tr class="singupForm__tr">
                             <td class="singupForm__label">名前</td>
                             <td class="singupForm__input-wrap">
-                                <input type="text" />
+                                <input type="text" v-model="name" />
                             </td>
                         </tr>
                         <tr class="singupForm__tr error">
@@ -23,7 +23,7 @@
                         <tr class="singupForm__tr">
                             <td class="singupForm__label">メールアドレス</td>
                             <td class="singupForm__input-wrap">
-                                <input type="text" />
+                                <input type="text" v-model="email" />
                             </td>
                         </tr>
                         <tr class="singupForm__tr error">
@@ -36,7 +36,7 @@
                         <tr class="singupForm__tr">
                             <td class="singupForm__label">パスワード</td>
                             <td class="singupForm__input-wrap">
-                                <input type="password" />
+                                <input type="password" v-model="password" />
                             </td>
                         </tr>
                         <tr class="login__Form__tr error">
@@ -48,7 +48,12 @@
                         <tr>
                             <td></td>
                             <td class="singupForm__button">
-                                <button>新規登録</button>
+                                <button
+                                    class="singupForm__singUp"
+                                    @click="singUp"
+                                >
+                                    新規登録
+                                </button>
                             </td>
                         </tr>
                     </table>
@@ -59,36 +64,21 @@
 </template>
 
 <script setup lang="ts">
-import Header from '../components/Header.vue';
-// import { inject, ref, reactive, toRefs } from "vue";
-// import { useRouter } from "vue-router";
-// import { singUp, login } from "../api/authApi";
-// import { key } from "../store/index";
-// const router = useRouter();
-// const store = inject(key);
-// const name = ref("");
-// const email = ref("");
-// const password = ref("");
-// const errorMessage = ref({ name: "", email: "", password: "" });
+import Header from "../components/Header.vue";
+import { ref } from "vue";
+import { authSingUp, authLogin } from "../../api/authApi";
+import axios from "axios";
+const name = ref("");
+const email = ref("");
+const password = ref("");
 
-// const singUpApp = async () => {
-//     singUp(name.value, email.value, password.value)
-//         .then(() => {
-//             store.authUser();
-//             login(email.value, password.value)
-//                 .then(() => {
-//                     store.authUser();
-//                     router.push("/");
-//                 })
-//                 .catch((Error) => {
-//                     throw new Error(`${Error}: login失敗`);
-//                 });
-//         })
-//         .catch((Error) => {
-//             const ErrorRes = Error.response.data.errors;
-//             errorMessage.value = reactive(ErrorRes);
-//         });
-// };
+const singUp = async () => {
+    await authSingUp(name.value, email.value, password.value)
+        .then(() => {
+            authLogin(email.value, password.value);
+        })
+        .catch(() => {});
+};
 </script>
 <style lang="scss" scoped>
 .singup {

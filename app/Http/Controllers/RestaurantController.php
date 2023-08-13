@@ -5,15 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class RestaurantController extends Controller
 {
+    use AuthenticatesUsers;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Restaurant::get()->all();
+        // return Restaurant::get()->all();
+        return Restaurant::where('user_id', Auth::id())->orderByDesc('id')->get();
     }
 
     /**
@@ -23,7 +33,7 @@ class RestaurantController extends Controller
     {
         $file_name = $request->file('food_picture')->getClientOriginalName();
         $request->file('food_picture')->storeAs('public/', $file_name);
-
+        $json_data = json_encode($request->categorie, JSON_PRETTY_PRINT);
         $restaurant = new Restaurant();
         $restaurant->name = $request->name;
         $restaurant->name_katakana = $request->name_katakana;
@@ -33,7 +43,7 @@ class RestaurantController extends Controller
         $restaurant->tel = $request->tel;
         $restaurant->user_id = $request->user_id;
         $restaurant->food_picture = $file_name;
-
+        $restaurant->categorie = $json_data;
         $restaurant->save();
 
         return $restaurant
@@ -70,6 +80,8 @@ class RestaurantController extends Controller
         $restaurant->review = $request->review;
         $restaurant->tel = $request->tel;
         $restaurant->user_id = $request->user_id;
+        $json_data = json_encode($request->categorie, JSON_PRETTY_PRINT);
+        $restaurant->categorie = $json_data;
 
         $restaurant->save();
         return $restaurant

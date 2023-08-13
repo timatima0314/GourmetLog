@@ -15,6 +15,7 @@ class Restaurant extends Model
     protected $table = 'restaurants';
 
     protected $fillable = [
-        'user_id', 'name', 'name_katakana', 'review', 'food_picture', 'map_url', 'comment', 'tel', 'deleted_at'
+        'user_id', 'name', 'name_katakana', 'review',
+        'food_picture', 'map_url', 'comment', 'tel', 'categorie', 'deleted_at'
     ];
 }

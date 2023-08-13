@@ -13,10 +13,8 @@ import { useRouter } from "vue-router";
                 <li class="aside__list-itme">
                     <router-link to="/list">お店リスト</router-link>
                 </li>
-                <li class="aside__list-itme">
-                    <router-link to="/shop_register_edit"
-                        >お店登録/編集</router-link
-                    >
+                <li class="aside__list-itme" @click="goShopRegisterEdit">
+                    お店登録/編集
                 </li>
                 <li class="aside__list-itme">
                     <router-link to="/category_register"
@@ -25,9 +23,47 @@ import { useRouter } from "vue-router";
                 </li>
             </ui>
         </nav>
-        <div class="asiede__logout">エックス</div>
+        <div
+            class="asiede__logout"
+            type="button"
+            style="cursor: pointer"
+            @click="logout"
+        >
+            エックス
+        </div>
     </aside>
 </template>
+<script lang="ts" setup>
+import { authLogout, authGet } from "../../api/authApi";
+import { onMounted, ref } from "vue";
+import router from "../router";
+
+const userId = ref();
+const goShopRegisterEdit = () => {
+    router.push({
+        name: "ShopRegisterEdit",
+        query: {
+            user_id: userId.value,
+        },
+    });
+};
+
+const logout = async () => {
+    await authLogout();
+};
+onMounted(async () => {
+    await authGet()
+        .then((res) => {
+            userId.value = res.user.id;
+        })
+        .catch((err) => {
+            router.push("/login");
+
+            console.log(err.response);
+        });
+    // userIdSet();
+});
+</script>
 
 <style lang="scss" scoped>
 aside {

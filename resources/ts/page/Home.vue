@@ -8,6 +8,24 @@
 </template>
 <script lang="ts" setup>
 import Header from "../components/Header.vue";
+import axios from "axios";
+import { onMounted } from "vue";
+const getAuth = () => {
+    axios
+        .get("/api/user/auth")
+        .then((res) => {
+            if (res.data.result) {
+                console.log(res.data.user);
+                // auth.value = true;
+            }
+        })
+        .catch((err) => {
+            console.log(err.response);
+        });
+};
+onMounted(()=>{
+    getAuth();
+})
 </script>
 <style lang="scss" scoped>
 .home__background {
