@@ -26,7 +26,7 @@
                     >
                         <tr>
                             <td class="list__table-td">
-                                <p>{{ item.id }}</p>
+                                <p>{{ i+1 }}</p>
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.name }}</p>

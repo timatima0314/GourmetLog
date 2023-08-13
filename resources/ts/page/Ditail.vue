@@ -24,7 +24,14 @@
                                 style="margin: 0 2rem 1rem 0"
                             >
                                 <div class="item__title">カテゴリー:</div>
-                                <div class="item__date">日本料理</div>
+                                <div class="item__date">
+                                    <span
+                                        v-for="one in categorie"
+                                        :key="one"
+                                        style="margin-right: 0.5rem"
+                                        >{{ one }}</span
+                                    >
+                                </div>
                             </div>
                             <div class="item__box column" style="margin: 0">
                                 <div class="item__title">レビュー:</div>
@@ -99,6 +106,7 @@ const {
     review,
     tel,
     user_id,
+    categorie,
 } = restaurantData.value;
 </script>
 <style lang="scss" scoped>

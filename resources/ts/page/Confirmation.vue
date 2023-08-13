@@ -20,7 +20,13 @@
                         </div>
                         <div class="item__box">
                             <div class="item__title">カテゴリー:</div>
-                            <div class="item__date">日本料理</div>
+                            <div
+                                v-for="item in restaurantData.categorie"
+                                :key="item"
+                                class="item__date"
+                            >
+                                {{ item }}
+                            </div>
                         </div>
                         <div class="item__box">
                             <div class="item__title">レビュー:</div>
@@ -31,12 +37,6 @@
                         <div class="item__box column">
                             <div class="item__title">料理写真:</div>
                             <div class="item__date">
-                                <!-- <img
-                                    v-if="fileUrl"
-                                    width="250"
-                                    height="180"
-                                    :src="fileUrl"
-                                /> -->
                                 <img
                                     v-if="fileUrlEdit"
                                     alt="料理画像"
@@ -56,7 +56,7 @@
                             <div class="item__title">Google Map:</div>
                             <div class="item__date">
                                 <iframe
-                                    :src="`https://maps.google.co.jp/maps?output=embed&q=${ restaurantData.map_url }`"
+                                    :src="`https://maps.google.co.jp/maps?output=embed&q=${restaurantData.map_url}`"
                                     width="300"
                                     height="200"
                                     style="border: 0"
@@ -80,7 +80,9 @@
                             </div>
                         </div>
                         <div class="button__box">
-                            <button class="fix" @click="previousScreen">修正する</button>
+                            <button class="fix" @click="previousScreen">
+                                修正する
+                            </button>
                             <button
                                 v-if="!propEditId"
                                 class="register"
@@ -115,7 +117,6 @@ const propEditId = ref();
 const store = useStore();
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
-
 const length = store.state.restaurantData.length - 1;
 const restaurantData = computed(() => {
     return store.state.restaurantData[length];
@@ -129,6 +130,7 @@ const {
     review,
     tel,
     user_id,
+    categorie,
 } = restaurantData.value;
 const config = {
     headers: {
@@ -144,7 +146,7 @@ const storeClear = () => {
         map_url: "",
         comment: "",
         tel: "",
-        user_id: 1,
+        categorie: [],
     });
 };
 const update = async (id: number) => {
@@ -157,6 +159,7 @@ const update = async (id: number) => {
         comment,
         tel,
         user_id,
+        categorie,
         config,
         id,
     })
@@ -168,6 +171,18 @@ const update = async (id: number) => {
 };
 
 const shopDataCreate = async () => {
+    console.log({
+        name,
+        name_katakana,
+        comment,
+        food_picture,
+        map_url,
+        review,
+        tel,
+        user_id,
+        categorie,
+        config,
+    });
     await restaurantCreate({
         name,
         name_katakana,
@@ -177,6 +192,7 @@ const shopDataCreate = async () => {
         review,
         tel,
         user_id,
+        categorie,
         config,
     })
         .then(async () => {
@@ -201,7 +217,6 @@ const imgShow = () => {
 
 onMounted(() => {
     propEditId.value = _router.query.id;
-
     imgShow();
 });
 

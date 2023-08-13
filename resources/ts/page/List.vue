@@ -36,13 +36,18 @@
                     <template v-for="(item, i) in shopList" :key="item.i">
                         <tr>
                             <td class="list__table-td">
-                                <p>{{ item.id }}</p>
+                                <p>{{ i+1}}</p>
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.name }}</p>
                             </td>
                             <td class="list__table-td">
-                                <p>{{ item.name_katakana }}</p>
+                                <span
+                                    v-for="one in item.categorie"
+                                    :key="one"
+                                    style="margin-right: 0.5rem"
+                                    >{{ one }}</span
+                                >
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.review }}</p>
@@ -92,6 +97,7 @@ import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
 import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
@@ -99,7 +105,12 @@ const store = useStore();
 
 const shopList = ref();
 const shopDataGet = async () => {
-    shopList.value = await restaurantGet();
+    const restaurantData = await restaurantGet();
+    // DBのitem.categorieはjsonなので変換する。
+    restaurantData.map((item) => {
+        item.categorie = JSON.parse(item.categorie);
+    });
+    shopList.value = restaurantData;
 };
 const edit = (e) => {
     const index = e.target.dataset.index;
@@ -114,6 +125,7 @@ const edit = (e) => {
         comment,
         tel,
         user_id,
+        categorie,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -124,11 +136,13 @@ const edit = (e) => {
         comment: comment,
         tel: tel,
         user_id: user_id,
+        categorie: categorie,
     });
     router.push({
         name: "ShopRegisterEdit",
         query: {
             id: id,
+            user_id: user_id,
         },
     });
 };
@@ -145,6 +159,7 @@ const goDitail = (e) => {
         comment,
         tel,
         user_id,
+        categorie,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -154,7 +169,7 @@ const goDitail = (e) => {
         map_url: map_url,
         comment: comment,
         tel: tel,
-        user_id: user_id,
+        categorie: categorie,
     });
     router.push({
         name: "Ditail",
@@ -185,10 +200,9 @@ const storeClear = () => {
         map_url: "",
         comment: "",
         tel: "",
-        user_id: 1,
+        categorie: [],
     });
 };
-
 onMounted(() => {
     storeClear();
     shopDataGet();

@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Categorie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategorieController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         return Categorie::get()->all();
+        // return Categorie::where('user_id', Auth::id())->orderByDesc('id')->get();
+
     }
 
     /**

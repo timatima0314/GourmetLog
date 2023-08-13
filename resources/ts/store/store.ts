@@ -11,7 +11,8 @@ type RestaurantData = {
     map_url: string,
     comment: string,
     tel: string,
-    user_id: number,
+    user_id: any,
+    categorie: any,
 };
 // stateの型定義
 type State = {
@@ -34,6 +35,7 @@ export const store = createStore<State>({
                 comment: '',
                 tel: '',
                 user_id: 1,
+                categorie: []
             }
         ]
     },

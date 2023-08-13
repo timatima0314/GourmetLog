@@ -16,17 +16,17 @@
                     <div class="input__box column">
                         <dev>カテゴリー</dev>
                         <ul class="input__checkbox-list">
-                            <li class="input__checkbox-item">
+                            <li
+                                v-for="item in categorieList"
+                                :key="item.id"
+                                class="input__checkbox-item"
+                            >
                                 <input
                                     class="input__checkbox"
                                     type="checkbox"
-                                /><label>日本料理</label>
-                            </li>
-                            <li class="input__checkbox-item">
-                                <input
-                                    class="input__checkbox"
-                                    type="checkbox"
-                                /><label>日本料理</label>
+                                    :value="item.name"
+                                    v-model="form.checkCategorie"
+                                /><label>{{ item.name }}</label>
                             </li>
                         </ul>
                     </div>
@@ -89,6 +89,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from "vue";
 import SideBar from "../components/SideBar.vue";
+import { categorieGet } from "../../api/categorieApi";
 import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
 import { useRoute } from "vue-router";
@@ -96,9 +97,11 @@ import router from "../router";
 
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
-
+// const checkCategorie= ref([]);
 const _router = useRoute();
+const propUserId = ref();
 const propEditId = ref();
+const categorieList = ref();
 
 const fileSelected = (event) => {
     const file = event.target.files[0];
@@ -114,7 +117,8 @@ const form = reactive({
     map_url: "",
     comment: "",
     tel: "",
-    user_id: 1,
+    user_id: propUserId,
+    checkCategorie: [],
 });
 const store = useStore();
 const lengths = store.state.restaurantData.length - 1;
@@ -130,6 +134,7 @@ const {
     review,
     tel,
     user_id,
+    categorie,
 } = restaurantData.value;
 
 const listItemGet = () => {
@@ -141,16 +146,20 @@ const listItemGet = () => {
     form.comment = comment;
     form.tel = tel;
     form.user_id = user_id;
+    form.checkCategorie = categorie;
 };
 
 onMounted(async () => {
     await listItemGet();
+    propUserId.value = _router.query.user_id;
+
     propEditId.value = _router.query.id;
     if (food_picture) {
         propEditId.value
             ? (fileUrlEdit.value = food_picture)
             : (fileUrl.value = URL.createObjectURL(food_picture));
     }
+    categorieList.value = await categorieGet();
 });
 
 const clearForm = () => {
@@ -161,7 +170,8 @@ const clearForm = () => {
     form.map_url = "";
     form.comment = "";
     form.tel = "";
-    form.user_id = 1;
+    // form.user_id = 1;
+    form.checkCategorie = [];
 };
 const toConfirmation = () => {
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
@@ -172,7 +182,8 @@ const toConfirmation = () => {
         map_url: form.map_url,
         comment: form.comment,
         tel: form.tel,
-        user_id: 2,
+        user_id: form.user_id,
+        categorie: form.checkCategorie,
     });
     propEditId
         ? router.push({
@@ -195,6 +206,8 @@ main {
 .input__checkbox-list {
     display: flex;
     font-weight: normal;
+    width: 20rem;
+    flex-wrap: wrap;
 }
 .input__checkbox-item {
     list-style-type: none;
