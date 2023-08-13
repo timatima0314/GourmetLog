@@ -68,7 +68,9 @@ button {
 }
 
 .edit,
-.register {
+.register,
+.loginForm__login,
+.singupForm__singUp {
   background-color: blue;
 }
 
