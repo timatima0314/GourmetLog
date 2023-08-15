@@ -16,10 +16,8 @@ import { useRouter } from "vue-router";
                 <li class="aside__list-itme" @click="goShopRegisterEdit">
                     お店登録/編集
                 </li>
-                <li class="aside__list-itme">
-                    <router-link to="/category_register"
-                        >カテゴリー管理</router-link
-                    >
+                <li class="aside__list-itme" @click="goCategoryRegister">
+                    カテゴリー管理
                 </li>
             </ui>
         </nav>
@@ -42,6 +40,14 @@ const userId = ref();
 const goShopRegisterEdit = () => {
     router.push({
         name: "ShopRegisterEdit",
+        query: {
+            user_id: userId.value,
+        },
+    });
+};
+const goCategoryRegister = () => {
+    router.push({
+        name: "CategoryRegister",
         query: {
             user_id: userId.value,
         },
@@ -97,6 +103,7 @@ aside {
     line-height: 3rem;
     width: 100%;
     text-align: center;
+    cursor: pointer;
 
     &:hover {
         background-color: #fff;
