@@ -15,7 +15,7 @@
                                 v-model="categorieNameEdit"
                             />
                             <div class="error__messages">
-                                <!-- <span v-if="errorsMessages">{{ errorsMessages }}</span> -->
+                                <span v-if="valiErrorMessage.name" class="err">{{ valiErrorMessage.name[0] }}</span>
                             </div>
                             <div class="edit__button-wrap">
                                 <button
@@ -48,6 +48,9 @@ const route = useRoute();
 const categorieNameEdit = ref("");
 const propEditId = ref();
 const propIndexId = ref();
+const valiErrorMessage = ref({
+    name: "",
+});
 
 const editItemGet = async () => {
     await categorieGet().then((item) => {
@@ -62,8 +65,18 @@ const updataCategory = async () => {
     await categorieUpdate({
         name: categorieNameEdit.value,
         id: propEditId.value,
-    });
-    router.push("/category_register");
+    })
+        .then(() => {
+            router.push("/category_register");
+        })
+        .catch((err) => {
+            if (err.response.status == 400) {
+                const ErrorRes = err.response.data.errors;
+                valiErrorMessage.value = ErrorRes;
+            } else {
+                // errorMessage.value = err.response.data.errorMessage;
+            }
+        });
 };
 const previousScreen = () => {
     router.push("/category_register");

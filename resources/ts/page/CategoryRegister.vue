@@ -9,6 +9,11 @@
                     <input type="text" v-model="formName" />
                     <button @click="createCategory">登録</button>
                 </div>
+                <div class="err">
+                    <div v-if="valiErrorMessage">
+                        {{ valiErrorMessage.name[0] }}
+                    </div>
+                </div>
             </form>
             <div class="list__table">
                 <table class="list__table-inner">
@@ -60,7 +65,7 @@
 import SideBar from "../components/SideBar.vue";
 import { categorieGet, categorieCreate, destroy } from "../../api/categorieApi";
 import { ref, createApp, onMounted } from "vue";
-import { useRouter,useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
@@ -68,10 +73,24 @@ const route = useRoute();
 const formName = ref("");
 const listCategorie = ref();
 const propUserId = ref();
+const valiErrorMessage = ref({
+    name: "",
+});
 
 const createCategory = async () => {
-    await categorieCreate({ name: formName.value, user_id:propUserId.value  });
-    formName.value = "";
+    await categorieCreate({ name: formName.value, user_id: propUserId.value })
+        .then(() => {
+            formName.value = "";
+            valiErrorMessage.value = { name: "" };
+        })
+        .catch((err) => {
+            if (err.response.status == 400) {
+                const ErrorRes = err.response.data.errors;
+                valiErrorMessage.value = ErrorRes;
+            } else {
+                // errorMessage.value = err.response.data.errorMessage;
+            }
+        });
     getCategory();
 };
 const getCategory = async () => {
@@ -102,7 +121,6 @@ const edit = (e) => {
 onMounted(() => {
     getCategory();
     propUserId.value = route.query.user_id;
-
 });
 </script>
 <style lang="scss" scoped>
@@ -146,5 +164,8 @@ onMounted(() => {
     &:last-child {
         border-right: none;
     }
+}
+.err {
+    height: 1rem;
 }
 </style>

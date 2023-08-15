@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CategorieRequest;
 
 class CategorieController extends Controller
 {
@@ -31,7 +32,7 @@ class CategorieController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategorieRequest $request)
     {
         $categorie = Categorie::create($request->all());
         return $categorie
@@ -58,7 +59,7 @@ class CategorieController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(CategorieRequest $request, $id)
     {
         $categorie = Categorie::findorFail($id);
         $categorie->fill($request->all())->save();
