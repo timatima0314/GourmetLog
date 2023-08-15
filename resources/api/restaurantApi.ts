@@ -17,7 +17,7 @@ const restaurantCreate = async ({
     categorie,
     config
 }) => {
-    const { data } = await axios.post(`/api/gourmet`, {
+    await axios.post(`/api/gourmet`, {
         name,
         name_katakana,
         comment,
@@ -27,8 +27,8 @@ const restaurantCreate = async ({
         tel,
         user_id,
         categorie
-    }, config);
-    return data;
+    }, config)
+
 };
 const restaurantUpdate = async ({
     name,
