@@ -14,7 +14,9 @@
                                 </div>
                             </div>
                             <div class="err">
-                                {{ valiErrorMessage.name[0] }}
+                                <div v-if="valiErrorMessage.name">
+                                    {{ valiErrorMessage.name[0] }}
+                                </div>
                             </div>
                         </div>
                         <div class="item__wrapper">
@@ -25,7 +27,9 @@
                                 </div>
                             </div>
                             <div class="err">
-                                {{ valiErrorMessage.name_katakana[0] }}
+                                <div v-if="valiErrorMessage.name_katakana">
+                                    {{ valiErrorMessage.name_katakana[0] }}
+                                </div>
                             </div>
                         </div>
                         <div class="item__wrapper">
@@ -40,11 +44,12 @@
                                 </div>
                             </div>
                             <div class="err">
-                                {{ valiErrorMessage.categorie[0] }}
+                                <div v-if="valiErrorMessage">
+                                    {{ valiErrorMessage.categorie[0] }}
+                                </div>
                             </div>
                         </div>
                         <div class="item__wrapper">
-
                             <div class="item__box">
                                 <div class="item__title">レビュー:</div>
                                 <div class="item__date">
@@ -52,9 +57,10 @@
                                 </div>
                             </div>
                             <div class="err">
-                                {{ valiErrorMessage.review[0] }}
+                                <div v-if="valiErrorMessage.review">
+                                    {{ valiErrorMessage.review[0] }}
+                                </div>
                             </div>
-
                         </div>
                         <div class="item__box column">
                             <div class="item__title">料理写真:</div>
@@ -74,9 +80,15 @@
                                 />
                             </div>
                         </div>
-                        <div class="item__box column" style="margin-bottom: 1rem;">
+                        <div
+                            class="item__box column"
+                            style="margin-bottom: 1rem"
+                        >
                             <div class="item__title">Google Map:</div>
-                            <div v-if="restaurantData.map_url" class="item__date">
+                            <div
+                                v-if="restaurantData.map_url"
+                                class="item__date"
+                            >
                                 <iframe
                                     :src="`https://maps.google.co.jp/maps?output=embed&q=${restaurantData.map_url}`"
                                     width="300"
@@ -95,9 +107,10 @@
                                 {{ restaurantData.tel }}
                             </div>
                             <div class="err">
-                                {{ valiErrorMessage.tel[0] }}
+                                <div v-if="valiErrorMessage.tel">
+                                    {{ valiErrorMessage.tel[0] }}
+                                </div>
                             </div>
-
                         </div>
                         <div class="item__box column">
                             <div class="item__title">コメント:</div>
@@ -105,9 +118,10 @@
                                 {{ restaurantData.comment }}
                             </div>
                             <div class="err">
-                                {{ valiErrorMessage.comment[0] }}
+                                <div v-if="valiErrorMessage.comment">
+                                    {{ valiErrorMessage.comment[0] }}
+                                </div>
                             </div>
-
                         </div>
                         <div class="button__box">
                             <button class="fix" @click="previousScreen">
@@ -306,6 +320,7 @@ main {
     }
 }
 .button__box {
+    margin-top: 1rem;
     display: flex;
     justify-content: space-between;
 }
