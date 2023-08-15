@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use \Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
@@ -42,19 +45,18 @@ class LoginController extends Controller
     /**
      * ログイン
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $result = false;
-        $message = '';
-        $user = [];
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            $result = true;
-        } else {
-            $message = 'EmailまたはPasswordが間違っています。';
+            return response()->json(true, Response::HTTP_OK);
         }
-        return response()->json(['result' => $result, 'message' => $message]);
+
+        return response()->json(['errorMessage' => 'メールアドレス、またはパスワードが有効ではありません。'], 500);
     }
     /**
      * ログアウト
@@ -78,8 +80,8 @@ class LoginController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             $result = true;
-        } 
-        
+        }
+
         return response()->json(['result' => $result, 'user' => $user]);
     }
 }

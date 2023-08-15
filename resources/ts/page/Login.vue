@@ -14,9 +14,9 @@
                         </tr>
                         <tr class="login__Form__tr error">
                             <td></td>
-                            <!-- <td v-if="valiErrorMessage.email">
+                            <td v-if="valiErrorMessage.email" class="err">
                                 {{ valiErrorMessage.email[0] }}
-                            </td> -->
+                            </td>
                         </tr>
 
                         <tr class="login__Form__tr">
@@ -27,15 +27,15 @@
                         </tr>
                         <tr class="login__Form__tr error">
                             <td></td>
-                            <!-- <td v-if="valiErrorMessage.password">
+                            <td v-if="valiErrorMessage.password" class="err">
                                 {{ valiErrorMessage.password[0] }}
-                            </td> -->
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
-                            <!-- <td v-if="errorMessage" style="color: red">
+                            <td v-if="errorMessage" class="err">
                                 {{ errorMessage }}
-                            </td> -->
+                            </td>
                         </tr>
                         <tr style="height: 1rem">
                             <td></td>
@@ -76,12 +76,37 @@ import { ref, onMounted } from "vue";
 import router from "../router";
 
 const auth = ref(false);
-
+const errorMessage = ref("");
+const valiErrorMessage = ref({ email: "", password: "" });
 const password = ref("123");
 const email = ref("testtt@example.com");
 
 const login = async () => {
-    await authLogin(email.value, password.value);
+    valiErrorMessage.value = { email: "", password: "" };
+    errorMessage.value = "";
+    await axios
+        .get("/sanctum/csrf-cookie")
+        .then(() => {
+            axios
+                .post(`/api/user/login`, {
+                    password: password.value,
+                    email: email.value,
+                })
+                .then((res) => {
+                    router.push("/dash_board");
+                })
+                .catch((err) => {
+                    if (err.response.status == 400) {
+                        const ErrorRes = err.response.data.errors;
+                        valiErrorMessage.value = ErrorRes;
+                    } else {
+                        errorMessage.value = err.response.data.errorMessage;
+                    }
+                });
+        })
+        .catch((res) => {
+            console.log(res);
+        });
 };
 </script>
 <style lang="scss" scoped>
