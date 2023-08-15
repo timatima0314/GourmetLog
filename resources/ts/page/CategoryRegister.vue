@@ -26,7 +26,7 @@
                     >
                         <tr>
                             <td class="list__table-td">
-                                <p>{{ i+1 }}</p>
+                                <p>{{ i + 1 }}</p>
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.name }}</p>
@@ -60,14 +60,17 @@
 import SideBar from "../components/SideBar.vue";
 import { categorieGet, categorieCreate, destroy } from "../../api/categorieApi";
 import { ref, createApp, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
+
 const formName = ref("");
 const listCategorie = ref();
+const propUserId = ref();
 
 const createCategory = async () => {
-    await categorieCreate({ name: formName.value, user_id: 1 });
+    await categorieCreate({ name: formName.value, user_id:propUserId.value  });
     formName.value = "";
     getCategory();
 };
@@ -98,6 +101,8 @@ const edit = (e) => {
 };
 onMounted(() => {
     getCategory();
+    propUserId.value = route.query.user_id;
+
 });
 </script>
 <style lang="scss" scoped>

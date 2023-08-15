@@ -18,9 +18,7 @@ class CategorieController extends Controller
      */
     public function index()
     {
-        return Categorie::get()->all();
-        // return Categorie::where('user_id', Auth::id())->orderByDesc('id')->get();
-
+        return Categorie::where('user_id', Auth::id())->orderByDesc('id')->get();
     }
 
     /**
