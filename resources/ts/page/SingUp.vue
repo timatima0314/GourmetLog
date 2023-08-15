@@ -14,10 +14,10 @@
                         </tr>
                         <tr class="singupForm__tr error">
                             <td></td>
-                            <!-- <td v-if="errorMessage.name">
+                            <td v-if="errorMessage.name" class="err">
                                 {{ errorMessage.name[0] }}
-                            </td> -->
-                            <!-- <td v-else></td> -->
+                            </td>
+                            <td v-else></td>
                         </tr>
 
                         <tr class="singupForm__tr">
@@ -28,9 +28,9 @@
                         </tr>
                         <tr class="singupForm__tr error">
                             <td></td>
-                            <!-- <td v-if="errorMessage.email">
+                            <td v-if="errorMessage.email" class="err">
                                 {{ errorMessage.email[0] }}
-                            </td> -->
+                            </td>
                         </tr>
 
                         <tr class="singupForm__tr">
@@ -41,9 +41,9 @@
                         </tr>
                         <tr class="login__Form__tr error">
                             <td></td>
-                            <!-- <td v-if="errorMessage.password">
+                            <td v-if="errorMessage.password" class="err">
                                 {{ errorMessage.password[0] }}
-                            </td> -->
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
@@ -65,19 +65,23 @@
 
 <script setup lang="ts">
 import Header from "../components/Header.vue";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { authSingUp, authLogin } from "../../api/authApi";
 import axios from "axios";
 const name = ref("");
 const email = ref("");
 const password = ref("");
+const errorMessage = ref({ name: "", email: "", password: "" });
 
 const singUp = async () => {
     await authSingUp(name.value, email.value, password.value)
         .then(() => {
             authLogin(email.value, password.value);
         })
-        .catch(() => {});
+        .catch((err) => {
+            const ErrorRes = err.response.data.errors;
+            errorMessage.value = reactive(ErrorRes);
+        });
 };
 </script>
 <style lang="scss" scoped>

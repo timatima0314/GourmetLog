@@ -1,6 +1,5 @@
 import axios from 'axios';
 import router from "../ts/router";
-
 const authLogin = async (email, password) => {
     await axios
         .get("/sanctum/csrf-cookie")
@@ -13,10 +12,13 @@ const authLogin = async (email, password) => {
                 .then((res) => {
                     console.log(res.data);
                     router.push("/dash_board");
+                    return res
                 })
-                .catch(() => { });
+                .catch((err) => {
+                    return err;
+                })
         })
-        .catch(() => { });
+        .catch((res) => { console.log(res) });
 };
 
 const authLogout = async () => {
@@ -33,19 +35,19 @@ const authLogout = async () => {
         });
 };
 const authGet = async () => {
-const {data}=  await axios
+    const { data } = await axios
         .get("/api/user/auth")
-        // .then((res) => {
-        //     if (res.data.result) {
-        //         console.log(res.data.user);
-        //     }
-        // })
-        // .catch((err) => {
-        //     router.push("/login");
+    // .then((res) => {
+    //     if (res.data.result) {
+    //         console.log(res.data.user);
+    //     }
+    // })
+    // .catch((err) => {
+    //     router.push("/login");
 
-        //     console.log(err.response);
-        // });
-        return data
+    //     console.log(err.response);
+    // });
+    return data
 };
 
 const authSingUp = async (name, email, password) => {

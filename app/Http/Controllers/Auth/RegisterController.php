@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use \Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\RegisterRequest;
 
 
 class RegisterController extends Controller
@@ -66,7 +67,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(Request $request)
+    protected function create(RegisterRequest $request)
     {
         /** @var Illuminate\Validation\Validator $validator */
         $validator = Validator::make($request->all(), [
