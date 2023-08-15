@@ -83,4 +83,9 @@ button {
   color: #000;
 }
 
+.err {
+  font-size: 0.8rem;
+  color: red;
+}
+
 /*# sourceMappingURL=app.css.map */
