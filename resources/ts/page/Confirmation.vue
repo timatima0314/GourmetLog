@@ -6,33 +6,55 @@
             <form @submit.prevent enctype="multipart/form-data">
                 <div class="container column">
                     <div class="item__container">
-                        <div class="item__box">
-                            <div class="item__title">店名:</div>
-                            <div class="item__date">
-                                {{ restaurantData.name }}
+                        <div class="item__wrapper">
+                            <div class="item__box">
+                                <div class="item__title">店名:</div>
+                                <div class="item__date">
+                                    {{ restaurantData.name }}
+                                </div>
+                            </div>
+                            <div class="err">
+                                {{ valiErrorMessage.name[0] }}
                             </div>
                         </div>
-                        <div class="item__box">
-                            <div class="item__title">フリガナ:</div>
-                            <div class="item__date">
-                                {{ restaurantData.name_katakana }}
+                        <div class="item__wrapper">
+                            <div class="item__box">
+                                <div class="item__title">フリガナ:</div>
+                                <div class="item__date">
+                                    {{ restaurantData.name_katakana }}
+                                </div>
+                            </div>
+                            <div class="err">
+                                {{ valiErrorMessage.name_katakana[0] }}
                             </div>
                         </div>
-                        <div class="item__box">
-                            <div class="item__title">カテゴリー:</div>
-                            <div
-                                v-for="item in restaurantData.categorie"
-                                :key="item"
-                                class="item__date"
-                            >
-                                {{ item }}
+                        <div class="item__wrapper">
+                            <div class="item__box">
+                                <div class="item__title">カテゴリー:</div>
+                                <div
+                                    v-for="item in restaurantData.categorie"
+                                    :key="item"
+                                    class="item__date"
+                                >
+                                    {{ item }}
+                                </div>
+                            </div>
+                            <div class="err">
+                                {{ valiErrorMessage.categorie[0] }}
                             </div>
                         </div>
-                        <div class="item__box">
-                            <div class="item__title">レビュー:</div>
-                            <div class="item__date">
-                                {{ restaurantData.review }}
+                        <div class="item__wrapper">
+
+                            <div class="item__box">
+                                <div class="item__title">レビュー:</div>
+                                <div class="item__date">
+                                    {{ restaurantData.review }}
+                                </div>
                             </div>
+                            <div class="err">
+                                {{ valiErrorMessage.review[0] }}
+                            </div>
+
                         </div>
                         <div class="item__box column">
                             <div class="item__title">料理写真:</div>
@@ -52,9 +74,9 @@
                                 />
                             </div>
                         </div>
-                        <div class="item__box column">
+                        <div class="item__box column" style="margin-bottom: 1rem;">
                             <div class="item__title">Google Map:</div>
-                            <div class="item__date">
+                            <div v-if="restaurantData.map_url" class="item__date">
                                 <iframe
                                     :src="`https://maps.google.co.jp/maps?output=embed&q=${restaurantData.map_url}`"
                                     width="300"
@@ -72,12 +94,20 @@
                             <div class="item__date">
                                 {{ restaurantData.tel }}
                             </div>
+                            <div class="err">
+                                {{ valiErrorMessage.tel[0] }}
+                            </div>
+
                         </div>
                         <div class="item__box column">
                             <div class="item__title">コメント:</div>
                             <div class="item__date">
                                 {{ restaurantData.comment }}
                             </div>
+                            <div class="err">
+                                {{ valiErrorMessage.comment[0] }}
+                            </div>
+
                         </div>
                         <div class="button__box">
                             <button class="fix" @click="previousScreen">
@@ -117,6 +147,15 @@ const propEditId = ref();
 const store = useStore();
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
+const valiErrorMessage = ref({
+    name: "",
+    name_katakana: "",
+    comment: "",
+    review: "",
+    tel: "",
+    categorie: "",
+});
+
 const length = store.state.restaurantData.length - 1;
 const restaurantData = computed(() => {
     return store.state.restaurantData[length];
@@ -195,11 +234,19 @@ const shopDataCreate = async () => {
         categorie,
         config,
     })
-        .then(async () => {
+        .then(async (err) => {
             await storeClear();
-            router.push("/list");
+            // console.log(err)
+            // router.push("/list");
         })
-        .catch(() => {});
+        .catch((err) => {
+            if (err.response.status == 400) {
+                const ErrorRes = err.response.data.errors;
+                valiErrorMessage.value = ErrorRes;
+            } else {
+                // errorMessage.value = err.response.data.errorMessage;
+            }
+        });
 };
 const imgShow = () => {
     if (propEditId.value) {
@@ -251,7 +298,7 @@ main {
     min-width: 15rem;
 }
 .item__box {
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
     display: flex;
     &.column {
         flex-direction: column;
@@ -264,5 +311,8 @@ main {
 }
 .fix {
     color: #000;
+}
+.err {
+    height: 1rem;
 }
 </style>

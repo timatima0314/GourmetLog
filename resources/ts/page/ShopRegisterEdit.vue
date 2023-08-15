@@ -170,7 +170,6 @@ const clearForm = () => {
     form.map_url = "";
     form.comment = "";
     form.tel = "";
-    // form.user_id = 1;
     form.checkCategorie = [];
 };
 const toConfirmation = () => {
