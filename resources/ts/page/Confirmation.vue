@@ -250,7 +250,6 @@ const shopDataCreate = async () => {
     })
         .then(async (err) => {
             await storeClear();
-            // console.log(err)
             router.push("/list");
         })
         .catch((err) => {

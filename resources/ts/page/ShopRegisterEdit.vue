@@ -6,15 +6,15 @@
             <div class="container">
                 <form>
                     <div class="input__box column">
-                        <label>店名</label>
+                        <label>店名<span class="required">*</span></label>
                         <input type="text" v-model="form.name" />
                     </div>
                     <div class="input__box column">
-                        <label>フリガナ</label>
+                        <label>フリガナ<span class="required">*</span></label>
                         <input type="text" v-model="form.name_katakana" />
                     </div>
                     <div class="input__box column">
-                        <dev>カテゴリー</dev>
+                        <dev>カテゴリー<span class="required">*</span></dev>
                         <ul class="input__checkbox-list">
                             <li
                                 v-for="item in categorieList"
@@ -31,7 +31,7 @@
                         </ul>
                     </div>
                     <div class="input__box column">
-                        <label>レビュー（最高：5/最低：1）</label>
+                        <label>レビュー（最高：5/最低：1）<span class="required">*</span></label>
                         <select v-model="form.review">
                             <option>1</option>
                             <option>2</option>
@@ -70,7 +70,7 @@
                         <input type="text" v-model="form.tel" />
                     </div>
                     <div class="input__box column">
-                        <label>コメント</label>
+                        <label>コメント<span class="required">*</span></label>
                         <input type="text" v-model="form.comment" />
                     </div>
                     <div class="button_box">
