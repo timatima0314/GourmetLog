@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\Restaurant;
 
 class RestaurantRequest extends FormRequest
 {
@@ -28,8 +27,8 @@ class RestaurantRequest extends FormRequest
             'name' => 'required|max:100|string',
             'name_katakana' => ['required', 'regex:/^[ア-ン゛゜ァ-ォャ-ョー]+$/u'],
             'comment' => 'required|max:300',
-            'review' => ['required','regex:/^[1-5]+$/'],
-            'tel' => ['regex:/^[0-9-]+$/'],
+            'review' => ['required', 'regex:/^[1-5]+$/'],
+            'tel' => ['regex:/^[0-9-]+$/', 'nullable'],
             'categorie' => 'required'
 
         ];
@@ -45,9 +44,9 @@ class RestaurantRequest extends FormRequest
             'comment.required' => ':attributeは必須です。',
             'comment.max' => ':attributeは300文字以内でです。',
             'tel.regex' => ':attributeを入力してください。',
-            'categorie.required'=>':attributeは必須です。',
-            'review.required'=>':attributeは必須です。',
-            'review.regex'=>':attributeは1~5の数値で入力ください。'
+            'categorie.required' => ':attributeは必須です。',
+            'review.required' => ':attributeは必須です。',
+            'review.regex' => ':attributeは1~5の数値で入力ください。'
         ];
     }
     public function attributes()
@@ -58,7 +57,7 @@ class RestaurantRequest extends FormRequest
             'comment' => 'コメント',
             'review' => 'レビュー',
             'tel' => '電話番号',
-            'categorie'=>'カテゴリー'
+            'categorie' => 'カテゴリー'
         ];
     }
     protected function failedValidation(Validator $validator)

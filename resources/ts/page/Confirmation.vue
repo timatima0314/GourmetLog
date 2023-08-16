@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <div class="err">
-                                <div v-if="valiErrorMessage">
+                                <div v-if="valiErrorMessage.categorie">
                                     {{ valiErrorMessage.categorie[0] }}
                                 </div>
                             </div>
@@ -251,7 +251,7 @@ const shopDataCreate = async () => {
         .then(async (err) => {
             await storeClear();
             // console.log(err)
-            // router.push("/list");
+            router.push("/list");
         })
         .catch((err) => {
             if (err.response.status == 400) {
@@ -263,6 +263,7 @@ const shopDataCreate = async () => {
         });
 };
 const imgShow = () => {
+    if (!food_picture) return;
     if (propEditId.value) {
         const editJudge = typeof food_picture === "string";
         if (editJudge) {

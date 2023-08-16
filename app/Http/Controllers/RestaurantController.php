@@ -32,10 +32,14 @@ class RestaurantController extends Controller
      */
     public function store(RestaurantRequest $request)
     {
-        $file_name = $request->file('food_picture')->getClientOriginalName();
-        $request->file('food_picture')->storeAs('public/', $file_name);
-        $json_data = json_encode($request->categorie, JSON_PRETTY_PRINT);
         $restaurant = new Restaurant();
+        $file = $request->file('food_picture');
+        if (isset($file)) {
+            $file_name = $file->getClientOriginalName();
+            $request->file('food_picture')->storeAs('public/', $file_name);
+            $restaurant->food_picture = $file_name;
+        }
+        $json_data = json_encode($request->categorie, JSON_PRETTY_PRINT);
 
         $restaurant->name = $request->name;
         $restaurant->name_katakana = $request->name_katakana;
@@ -44,10 +48,7 @@ class RestaurantController extends Controller
         $restaurant->review = $request->review;
         $restaurant->tel = $request->tel;
         $restaurant->user_id = $request->user_id;
-        $restaurant->food_picture = $file_name;
         $restaurant->categorie = $json_data;
-        $all= $restaurant->all();
-        // dd($all);
         $restaurant->save();
 
         return $restaurant

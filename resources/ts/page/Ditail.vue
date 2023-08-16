@@ -43,7 +43,7 @@
                         <div class="item__box column">
                             <div class="item__title">料理写真:</div>
                             <div class="item__date">
-                                <img
+                                <img v-if="food_picture"
                                     width="250"
                                     height="180"
                                     :src="`storage/${food_picture}`"
@@ -53,7 +53,7 @@
                         <div class="item__box column">
                             <div class="item__title">Google Map:</div>
                             <div class="item__date">
-                                <iframe
+                                <iframe v-if="map_url"
                                     :src="`https://maps.google.co.jp/maps?output=embed&q=${map_url}`"
                                     width="300"
                                     height="200"
