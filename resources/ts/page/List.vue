@@ -36,7 +36,7 @@
                     <template v-for="(item, i) in shopList" :key="item.i">
                         <tr>
                             <td class="list__table-td">
-                                <p>{{ i+1}}</p>
+                                <p>{{ i + 1 }}</p>
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.name }}</p>
@@ -87,11 +87,36 @@
                     </template>
                 </table>
             </div>
+            <ul class="pagination">
+                <li
+                    v-for="(link, i) in pageLinks"
+                    :key="link"
+                    :data-label="link.label"
+                >
+                    <div v-if="i == 0" type="button" @click="backPageNation">
+                        ＜
+                    </div>
+                    <div
+                        v-else-if="i == pageLinksLength - 1"
+                        @click="nextPageNation"
+                    >
+                        ＞
+                    </div>
+                    <div
+                        v-else
+                        type="buttan"
+                        @click="changePageNation"
+                        :data-label="link.label"
+                    >
+                        {{ link.label }}
+                    </div>
+                </li>
+            </ul>
         </main>
     </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { restaurantGet, destroy } from "../../api/restaurantApi";
 import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
@@ -104,13 +129,60 @@ const router = useRouter();
 const store = useStore();
 
 const shopList = ref();
+const current_page: any = ref(1);
+const last_page: any = ref();
+const pageLinks = ref();
+const pageLinksLength = ref();
+const get = async () => {
+    const { data } = await axios.get(`/api/gourmet?page=${current_page.value}`);
+    return data;
+};
+
 const shopDataGet = async () => {
-    const restaurantData = await restaurantGet();
+    const restaurantData = await get();
+    last_page.value = restaurantData.last_page;
+    pageLinksLength.value = restaurantData.links.length;
+    pageLinks.value = restaurantData.links;
+    const { data } = restaurantData;
     // DBのitem.categorieはjsonなので変換する。
-    restaurantData.map((item) => {
+    data.map((item) => {
         item.categorie = JSON.parse(item.categorie);
     });
-    shopList.value = restaurantData;
+    shopList.value = data;
+};
+const changePageNation = async (e) => {
+    const label = e.target.dataset.label;
+    if (current_page.value == label) return;
+    current_page.value = Number(label);
+
+    const { data } = await axios.get(`/api/gourmet?page=${label}`);
+    const linkData = data.data;
+    linkData.map((item) => {
+        item.categorie = JSON.parse(item.categorie);
+    });
+    shopList.value = linkData;
+};
+const backPageNation = async () => {
+    if (current_page.value === 1) return;
+    const back = current_page.value - 1;
+    current_page.value = back;
+    const { data } = await axios.get(`/api/gourmet?page=${back}`);
+    const linkData = data.data;
+    linkData.map((item) => {
+        item.categorie = JSON.parse(item.categorie);
+    });
+    shopList.value = linkData;
+};
+const nextPageNation = async () => {
+    if (current_page.value == last_page.value) return;
+    const next = current_page.value + 1;
+    current_page.value = next;
+    const { data } = await axios.get(`/api/gourmet?page=${next}`);
+    const linkData = data.data;
+    linkData.map((item) => {
+        item.categorie = JSON.parse(item.categorie);
+    });
+    shopList.value = linkData;
 };
 const edit = (e) => {
     const index = e.target.dataset.index;
@@ -248,5 +320,18 @@ onMounted(() => {
     &:last-child {
         border-right: none;
     }
+}
+.pagination {
+    display: flex;
+    list-style-type: none;
+    font-size: 1rem;
+    font-weight: normal;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+.pagination li {
+    text-align: center;
+    cursor: pointer;
+    margin-right: 0.5rem;
 }
 </style>
