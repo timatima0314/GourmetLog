@@ -83,6 +83,11 @@ button {
   color: #000;
 }
 
+.required {
+  color: red;
+  margin-left: 0.5rem;
+}
+
 .err {
   font-size: 0.8rem;
   color: red;
