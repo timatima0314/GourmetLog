@@ -11,8 +11,8 @@ type RestaurantData = {
     map_url: string,
     comment: string,
     tel: string,
-    user_id: any,
-    categorie: any,
+    user_id: number,
+    categorie: [],
 };
 // stateの型定義
 type State = {

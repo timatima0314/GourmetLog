@@ -23,7 +23,7 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-         return Restaurant::where('user_id', Auth::id())->paginate(5);
+         return Restaurant::where('user_id', Auth::id())->paginate(10);
     }
 
     /**

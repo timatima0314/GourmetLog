@@ -31,7 +31,11 @@
                         </ul>
                     </div>
                     <div class="input__box column">
-                        <label>レビュー（最高：5/最低：1）<span class="required">*</span></label>
+                        <label
+                            >レビュー（最高：5/最低：1）<span class="required"
+                                >*</span
+                            ></label
+                        >
                         <select v-model="form.review">
                             <option>1</option>
                             <option>2</option>
@@ -94,6 +98,7 @@ import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
 import { useRoute } from "vue-router";
 import router from "../router";
+import { Categorie } from "../type/RestaurantType";
 
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
@@ -101,7 +106,7 @@ const fileUrlEdit = ref("");
 const _router = useRoute();
 const propUserId = ref();
 const propEditId = ref();
-const categorieList = ref();
+const categorieList = ref<[Categorie]>();
 
 const fileSelected = (event) => {
     const file = event.target.files[0];
@@ -162,16 +167,6 @@ onMounted(async () => {
     categorieList.value = await categorieGet();
 });
 
-const clearForm = () => {
-    form.name = "";
-    form.name_katakana = "";
-    form.review = 1;
-    form.food_picture = "";
-    form.map_url = "";
-    form.comment = "";
-    form.tel = "";
-    form.checkCategorie = [];
-};
 const toConfirmation = () => {
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: form.name,

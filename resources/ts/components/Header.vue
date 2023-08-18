@@ -10,9 +10,6 @@
                 <div class="header__auth__item">
                     <router-link to="/login">ログイン</router-link>
                 </div>
-                <!-- <div v-else class="header__auth__item">
-                    <div @click="logoutApp">ログアウト</div>
-                </div> -->
                 <div class="header__auth__item">
                     <router-link to="/singup">新規登録</router-link>
                 </div>
@@ -21,7 +18,6 @@
     </header>
 </template>
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
 </script>
 
 <style lang="scss" scoped>

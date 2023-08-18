@@ -77,7 +77,7 @@
                         </div>
                         <div class="button__box">
                             <router-link to="/list">
-                                <button class="back" @click="">
+                                <button class="back">
                                     お店リストに戻る
                                 </button>
                             </router-link>

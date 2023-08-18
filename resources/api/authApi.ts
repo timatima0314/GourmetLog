@@ -1,11 +1,13 @@
 import axios from 'axios';
 import router from "../ts/router";
-const authLogin = async (email, password) => {
+import { Login, SingUp, AuthUserRes } from "../ts/type/AuthType";
+
+const authLogin = async (email: string, password: string) => {
     await axios
         .get("/sanctum/csrf-cookie")
         .then(() => {
             axios
-                .post(`/api/user/login`, {
+                .post<Login>(`/api/user/login`, {
                     password: password,
                     email: email,
                 })
@@ -25,8 +27,6 @@ const authLogout = async () => {
     axios
         .post("/api/user/logout")
         .then((res) => {
-            // auth.value = false;
-            console.log(res.data.message);
             router.push("/login");
 
         })
@@ -35,23 +35,12 @@ const authLogout = async () => {
         });
 };
 const authGet = async () => {
-    const { data } = await axios
-        .get("/api/user/auth")
-    // .then((res) => {
-    //     if (res.data.result) {
-    //         console.log(res.data.user);
-    //     }
-    // })
-    // .catch((err) => {
-    //     router.push("/login");
-
-    //     console.log(err.response);
-    // });
+    const { data } = await axios.get<AuthUserRes>("/api/user/auth")
     return data
 };
 
-const authSingUp = async (name, email, password) => {
-    await axios.post(`/api/user/sing_up`, {
+const authSingUp = async (name: string, email: string, password: string) => {
+    await axios.post<SingUp>(`/api/user/sing_up`, {
         name: name,
         email: email,
         password: password,

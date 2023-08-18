@@ -36,7 +36,7 @@ import { authLogout, authGet } from "../../api/authApi";
 import { onMounted, ref } from "vue";
 import router from "../router";
 
-const userId = ref();
+const userId = ref<number>();
 const goShopRegisterEdit = () => {
     router.push({
         name: "ShopRegisterEdit",
@@ -67,7 +67,6 @@ onMounted(async () => {
 
             console.log(err.response);
         });
-    // userIdSet();
 });
 </script>
 

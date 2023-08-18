@@ -75,13 +75,11 @@ class LoginController extends Controller
      */
     public function auth()
     {
-        $result = false;
         $user = [];
         if (Auth::check()) {
             $user = Auth::user();
-            $result = true;
         }
 
-        return response()->json(['result' => $result, 'user' => $user]);
+        return response()->json(['user' => $user]);
     }
 }

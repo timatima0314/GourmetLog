@@ -3,10 +3,10 @@
         <SideBar />
         <main>
             <h1 class="page__title">お店リスト</h1>
-            <form>
+            <form @submit.prevent>
                 <div class="input__box col">
-                    <input type="text" />
-                    <button>検索</button>
+                    <input type="text" v-model="searchKey" />
+                    <button @click="keySearch">検索</button>
                 </div>
             </form>
             <div class="list__table">
@@ -87,7 +87,7 @@
                     </template>
                 </table>
             </div>
-            <ul class="pagination">
+            <ul v-if="shopListDataTotal > 10" class="pagination">
                 <li
                     v-for="(link, i) in pageLinks"
                     :key="link"
@@ -116,33 +116,37 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
-import { restaurantGet, destroy } from "../../api/restaurantApi";
+import { onMounted, ref } from "vue";
+import { destroy } from "../../api/restaurantApi";
 import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
 import { useRouter } from "vue-router";
 import axios from "axios";
-
+import { RestaurantData, PageNationData } from "../../ts/type/RestaurantType";
 const router = useRouter();
 
 const store = useStore();
-
+const searchKey = ref("");
 const shopList = ref();
-const current_page: any = ref(1);
-const last_page: any = ref();
+const shopListDataTotal = ref<number>(0);
+const current_page = ref(1);
+const last_page = ref(0);
 const pageLinks = ref();
-const pageLinksLength = ref();
-const get = async () => {
-    const { data } = await axios.get(`/api/gourmet?page=${current_page.value}`);
+const pageLinksLength = ref(0);
+const getRestaurantData = async () => {
+    const { data } = await axios.get<PageNationData>(
+        `/api/gourmet?page=${current_page.value}`
+    );
     return data;
 };
 
 const shopDataGet = async () => {
-    const restaurantData = await get();
+    const restaurantData: PageNationData = await getRestaurantData();
     last_page.value = restaurantData.last_page;
     pageLinksLength.value = restaurantData.links.length;
     pageLinks.value = restaurantData.links;
+    shopListDataTotal.value = restaurantData.total;
     const { data } = restaurantData;
     // DBのitem.categorieはjsonなので変換する。
     data.map((item) => {
@@ -155,7 +159,9 @@ const changePageNation = async (e) => {
     if (current_page.value == label) return;
     current_page.value = Number(label);
 
-    const { data } = await axios.get(`/api/gourmet?page=${label}`);
+    const { data } = await axios.get<PageNationData>(
+        `/api/gourmet?page=${label}`
+    );
     const linkData = data.data;
     linkData.map((item) => {
         item.categorie = JSON.parse(item.categorie);
@@ -166,7 +172,9 @@ const backPageNation = async () => {
     if (current_page.value === 1) return;
     const back = current_page.value - 1;
     current_page.value = back;
-    const { data } = await axios.get(`/api/gourmet?page=${back}`);
+    const { data } = await axios.get<PageNationData>(
+        `/api/gourmet?page=${back}`
+    );
     const linkData = data.data;
     linkData.map((item) => {
         item.categorie = JSON.parse(item.categorie);
@@ -177,12 +185,22 @@ const nextPageNation = async () => {
     if (current_page.value == last_page.value) return;
     const next = current_page.value + 1;
     current_page.value = next;
-    const { data } = await axios.get(`/api/gourmet?page=${next}`);
+    const { data } = await axios.get<PageNationData>(
+        `/api/gourmet?page=${next}`
+    );
     const linkData = data.data;
     linkData.map((item) => {
         item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
+};
+const keySearch = () => {
+    const data = shopList.value;
+    const searchList = data.filter((item: RestaurantData) => {
+        return item.name == searchKey.value;
+    });
+    searchKey.value = "";
+    shopList.value = searchList;
 };
 const edit = (e) => {
     const index = e.target.dataset.index;
@@ -333,5 +351,8 @@ onMounted(() => {
     text-align: center;
     cursor: pointer;
     margin-right: 0.5rem;
+    :hover {
+        text-decoration: underline;
+    }
 }
 </style>

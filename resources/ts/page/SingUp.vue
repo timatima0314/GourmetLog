@@ -67,7 +67,6 @@
 import Header from "../components/Header.vue";
 import { ref, reactive } from "vue";
 import { authSingUp, authLogin } from "../../api/authApi";
-import axios from "axios";
 const name = ref("");
 const email = ref("");
 const password = ref("");

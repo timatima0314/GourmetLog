@@ -1,7 +1,7 @@
 import axios from 'axios';
-
+import { Categorie } from '../ts/type/RestaurantType';
 const categorieGet = async () => {
-    const { data } = await axios.get(`/api/categorie/`);
+    const { data } = await axios.get<[Categorie]>(`/api/categorie/`);
     return data;
 };
 

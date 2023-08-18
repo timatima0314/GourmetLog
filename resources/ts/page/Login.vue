@@ -71,11 +71,10 @@
 <script setup lang="ts">
 import Header from "../components/Header.vue";
 import axios from "axios";
-import { authLogin, authLogout } from "../../api/authApi";
 import { ref, onMounted } from "vue";
 import router from "../router";
+import { Login } from "../type/AuthType";
 
-const auth = ref(false);
 const errorMessage = ref("");
 const valiErrorMessage = ref({ email: "", password: "" });
 const password = ref("123");
@@ -88,11 +87,11 @@ const login = async () => {
         .get("/sanctum/csrf-cookie")
         .then(() => {
             axios
-                .post(`/api/user/login`, {
+                .post<Login>(`/api/user/login`, {
                     password: password.value,
                     email: email.value,
                 })
-                .then((res) => {
+                .then(() => {
                     router.push("/dash_board");
                 })
                 .catch((err) => {

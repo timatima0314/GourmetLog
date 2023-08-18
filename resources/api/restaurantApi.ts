@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { RestaurantData } from '../ts/type/RestaurantType';
 const restaurantGet = async () => {
     const { data } = await axios.get(`/api/gourmet/`);
     return data;
@@ -16,8 +16,8 @@ const restaurantCreate = async ({
     user_id,
     categorie,
     config
-}) => {
-    await axios.post(`/api/gourmet`, {
+}:RestaurantData) => {
+    await axios.post<RestaurantData>(`/api/gourmet`, {
         name,
         name_katakana,
         comment,
@@ -42,9 +42,9 @@ const restaurantUpdate = async ({
     id,
     categorie,
     config
-}) => {
+}:RestaurantData) => {
     await axios
-        .post(`/api/updata/${id}`,
+        .post<RestaurantData>(`/api/updata/${id}`,
             {
                 name,
                 name_katakana,

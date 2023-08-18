@@ -64,14 +64,14 @@
 <script lang="ts" setup>
 import SideBar from "../components/SideBar.vue";
 import { categorieGet, categorieCreate, destroy } from "../../api/categorieApi";
-import { ref, createApp, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-
+import { Categorie } from "../type/RestaurantType";
 const router = useRouter();
 const route = useRoute();
 
 const formName = ref("");
-const listCategorie = ref();
+const listCategorie = ref<[Categorie]>();
 const propUserId = ref();
 const valiErrorMessage = ref({
     name: "",
@@ -109,7 +109,6 @@ const delConfOpen = async (id: number) => {
     }
 };
 const edit = (e) => {
-    const index = e.target.dataset.index;
     const id = e.target.dataset.id;
     router.push({
         name: "CategoryEdit",

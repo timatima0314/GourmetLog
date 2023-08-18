@@ -224,18 +224,6 @@ const update = async (id: number) => {
 };
 
 const shopDataCreate = async () => {
-    console.log({
-        name,
-        name_katakana,
-        comment,
-        food_picture,
-        map_url,
-        review,
-        tel,
-        user_id,
-        categorie,
-        config,
-    });
     await restaurantCreate({
         name,
         name_katakana,
@@ -248,7 +236,7 @@ const shopDataCreate = async () => {
         categorie,
         config,
     })
-        .then(async (err) => {
+        .then(async () => {
             await storeClear();
             router.push("/list");
         })

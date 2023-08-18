@@ -15,7 +15,11 @@
                                 v-model="categorieNameEdit"
                             />
                             <div class="error__messages">
-                                <span v-if="valiErrorMessage.name" class="err">{{ valiErrorMessage.name[0] }}</span>
+                                <span
+                                    v-if="valiErrorMessage.name"
+                                    class="err"
+                                    >{{ valiErrorMessage.name[0] }}</span
+                                >
                             </div>
                             <div class="edit__button-wrap">
                                 <button
@@ -41,7 +45,7 @@ import SideBar from "../components/SideBar.vue";
 import { categorieGet, categorieUpdate } from "../../api/categorieApi";
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-
+import { Categorie } from "../type/RestaurantType";
 const router = useRouter();
 const route = useRoute();
 
@@ -54,7 +58,7 @@ const valiErrorMessage = ref({
 
 const editItemGet = async () => {
     await categorieGet().then((item) => {
-        const filterData = item.filter((val) => {
+        const filterData = item.filter((val: Categorie) => {
             return val.id == propEditId.value;
         });
         categorieNameEdit.value = filterData[0].name;
