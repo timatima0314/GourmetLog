@@ -135,12 +135,12 @@
                                 登録する
                             </button>
                             <button
-                                v-else
-                                class="register"
-                                @click="update(propEditId)"
+                            v-else
+                            class="register"
+                            @click="update(propEditId)"
                             >
-                                更新する
-                            </button>
+                            更新する
+                        </button>
                         </div>
                     </div>
                 </div>
@@ -169,7 +169,6 @@ const valiErrorMessage = ref({
     tel: "",
     categorie: "",
 });
-
 const length = store.state.restaurantData.length - 1;
 const restaurantData = computed(() => {
     return store.state.restaurantData[length];
@@ -184,6 +183,7 @@ const {
     tel,
     user_id,
     categorie,
+    categorieId,
 } = restaurantData.value;
 const config = {
     headers: {
@@ -220,10 +220,13 @@ const update = async (id: number) => {
             await storeClear();
             router.push("/list");
         })
-        .catch(() => {});
+        .catch(() => {
+            alert("更新に失敗しました。");
+        });
 };
 
 const shopDataCreate = async () => {
+   
     await restaurantCreate({
         name,
         name_katakana,
@@ -234,6 +237,7 @@ const shopDataCreate = async () => {
         tel,
         user_id,
         categorie,
+        categorieId,
         config,
     })
         .then(async () => {
@@ -245,7 +249,7 @@ const shopDataCreate = async () => {
                 const ErrorRes = err.response.data.errors;
                 valiErrorMessage.value = ErrorRes;
             } else {
-                // errorMessage.value = err.response.data.errorMessage;
+                alert("登録に失敗しました。");
             }
         });
 };

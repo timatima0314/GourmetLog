@@ -46,7 +46,7 @@ select {
     border: 2px solid rgb(225, 225, 225);
 }
 button {
-    color: #fff;
+    // color: #fff;
     border-radius: 1rem;
     padding: 0.3rem 0.8rem;
     font-size: 1rem;
@@ -69,15 +69,18 @@ button {
 }
 .ditail {
     background-color: green;
+    color: #fff;
 }
 .edit,
 .register,
 .loginForm__login,
 .singupForm__singUp{
     background-color: blue;
+    color: #fff;
 }
 .delet {
     background-color: red;
+    color: #fff;
 }
 .back {
     background-color: #fff;

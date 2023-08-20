@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
 class Categorie extends Model
@@ -17,15 +18,8 @@ class Categorie extends Model
     protected $fillable = [
         'user_id', 'name', 'deleted_at'
     ];
-
-    // public function categoriy_tags(){
-    //     return $this->hasMany(CategoriyTag::class);
-    // }
-
-    // public static function booted(){
-    //     static::deleted(function($categorie){
-    //         // dd($categorie);
-    //         $categorie->categoriy_tags()->delete();
-    //     });
-    // }
+    public function restaurants(): BelongsToMany
+    {
+        return $this->belongsToMany(Restaurant::class, 'categoriy_tags','restaurant_id','category_id');
+    }
 }

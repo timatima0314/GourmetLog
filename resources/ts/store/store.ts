@@ -13,6 +13,7 @@ type RestaurantData = {
     tel: string,
     user_id: number,
     categorie: [],
+    categorieId:any
 };
 // stateの型定義
 type State = {
@@ -35,7 +36,8 @@ export const store = createStore<State>({
                 comment: '',
                 tel: '',
                 user_id: 1,
-                categorie: []
+                categorie: [],
+                categorieId:[]
             }
         ]
     },

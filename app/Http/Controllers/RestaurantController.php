@@ -17,13 +17,16 @@ class RestaurantController extends Controller
     {
         $this->middleware('auth');
     }
-
+    public function getAll()
+    {
+        return Restaurant::where('user_id', Auth::id())->get();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-         return Restaurant::where('user_id', Auth::id())->paginate(10);
+        return Restaurant::where('user_id', Auth::id())->paginate(10);
     }
 
     /**
@@ -49,6 +52,7 @@ class RestaurantController extends Controller
         $restaurant->user_id = $request->user_id;
         $restaurant->categorie = $json_data;
         $restaurant->save();
+        $restaurant->categories()->sync($request->get('categorieId',[]));
 
         return $restaurant
             ? response()->json($restaurant, 201)

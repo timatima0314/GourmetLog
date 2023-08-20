@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { RestaurantData } from '../ts/type/RestaurantType';
-const restaurantGet = async () => {
-    const { data } = await axios.get(`/api/gourmet/`);
-    return data;
-};
-
+const restaurantDataGetAll = async () => {
+    const { data } = await axios.get<[RestaurantData]>(`/api/get_all`);
+    return data
+}
 const restaurantCreate = async ({
     name,
     name_katakana,
@@ -15,8 +14,9 @@ const restaurantCreate = async ({
     tel,
     user_id,
     categorie,
+    categorieId,
     config
-}:RestaurantData) => {
+}: RestaurantData) => {
     await axios.post<RestaurantData>(`/api/gourmet`, {
         name,
         name_katakana,
@@ -26,7 +26,8 @@ const restaurantCreate = async ({
         review,
         tel,
         user_id,
-        categorie
+        categorie,
+        categorieId
     }, config)
 
 };
@@ -42,7 +43,7 @@ const restaurantUpdate = async ({
     id,
     categorie,
     config
-}:RestaurantData) => {
+}: RestaurantData) => {
     await axios
         .post<RestaurantData>(`/api/updata/${id}`,
             {
@@ -64,4 +65,4 @@ const destroy = async (id: number) => {
 };
 
 
-export { restaurantGet, restaurantCreate, destroy, restaurantUpdate }
+export { restaurantDataGetAll, restaurantCreate, destroy, restaurantUpdate }

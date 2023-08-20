@@ -17,7 +17,9 @@ type RestaurantData = {
     tel: string,
     user_id: number,
     categorie: any,
+    categorieId?:any,
     config: any,
+    listId?: number,
     id?: number
 
 }
@@ -35,4 +37,4 @@ type PageNationData = {
     total: number,
     links: any
 }
-export { Categorie, RestaurantData,PageNationData }
+export { Categorie, RestaurantData, PageNationData }

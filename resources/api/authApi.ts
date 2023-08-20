@@ -12,15 +12,16 @@ const authLogin = async (email: string, password: string) => {
                     email: email,
                 })
                 .then((res) => {
-                    console.log(res.data);
                     router.push("/dash_board");
                     return res
                 })
                 .catch((err) => {
-                    return err;
+                    alert('ログインに失敗しました。');
                 })
         })
-        .catch((res) => { console.log(res) });
+        .catch(() => {
+            alert('ログインに失敗しました。');
+        });
 };
 
 const authLogout = async () => {
@@ -31,7 +32,7 @@ const authLogout = async () => {
 
         })
         .catch((err) => {
-            console.log(err.response);
+            alert('ログアウトに失敗しました。');
         });
 };
 const authGet = async () => {

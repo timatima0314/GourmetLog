@@ -25,8 +25,10 @@
                                     class="input__checkbox"
                                     type="checkbox"
                                     :value="item.name"
+                                    :data-id="item.id"
+                                    @click="inputCategorieId"
                                     v-model="form.checkCategorie"
-                                /><label>{{ item.name }}</label>
+                                /><label>{{ item.name }}{{ item.id }}</label>
                             </li>
                         </ul>
                     </div>
@@ -102,7 +104,6 @@ import { Categorie } from "../type/RestaurantType";
 
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
-// const checkCategorie= ref([]);
 const _router = useRoute();
 const propUserId = ref();
 const propEditId = ref();
@@ -124,6 +125,7 @@ const form = reactive({
     tel: "",
     user_id: propUserId,
     checkCategorie: [],
+    checkCategorieId:<any>[]
 });
 const store = useStore();
 const lengths = store.state.restaurantData.length - 1;
@@ -140,6 +142,7 @@ const {
     tel,
     user_id,
     categorie,
+    categorieId
 } = restaurantData.value;
 
 const listItemGet = () => {
@@ -152,8 +155,12 @@ const listItemGet = () => {
     form.tel = tel;
     form.user_id = user_id;
     form.checkCategorie = categorie;
+    form.checkCategorieId=categorieId
 };
-
+const inputCategorieId=(e)=>{
+    console.log(e.target.dataset.id)
+    form.checkCategorieId.push(e.target.dataset.id)
+}
 onMounted(async () => {
     await listItemGet();
     propUserId.value = _router.query.user_id;
@@ -178,6 +185,7 @@ const toConfirmation = () => {
         tel: form.tel,
         user_id: form.user_id,
         categorie: form.checkCategorie,
+        categorieId:form.checkCategorieId
     });
     propEditId
         ? router.push({
