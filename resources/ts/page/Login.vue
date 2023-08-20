@@ -99,12 +99,12 @@ const login = async () => {
                         const ErrorRes = err.response.data.errors;
                         valiErrorMessage.value = ErrorRes;
                     } else {
-                        errorMessage.value = err.response.data.errorMessage;
+                        alert("ログインに失敗しました。");
                     }
                 });
         })
-        .catch((res) => {
-            console.log(res);
+        .catch(() => {
+            alert("ログインに失敗しました。");
         });
 };
 </script>

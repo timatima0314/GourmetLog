@@ -1,7 +1,3 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-import { useRouter } from "vue-router";
-</script>
 <template>
     <aside>
         <h1 class="aside__title">
@@ -55,17 +51,15 @@ const goCategoryRegister = () => {
 };
 
 const logout = async () => {
-    await authLogout();
+    await authLogout().catch(() => alert("ログアウトに失敗しました。"));
 };
 onMounted(async () => {
     await authGet()
         .then((res) => {
             userId.value = res.user.id;
         })
-        .catch((err) => {
+        .catch(() => {
             router.push("/login");
-
-            console.log(err.response);
         });
 });
 </script>

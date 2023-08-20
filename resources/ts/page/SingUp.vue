@@ -78,8 +78,12 @@ const singUp = async () => {
             authLogin(email.value, password.value);
         })
         .catch((err) => {
-            const ErrorRes = err.response.data.errors;
-            errorMessage.value = reactive(ErrorRes);
+            if (err.response.status == 400) {
+                const ErrorRes = err.response.data.errors;
+                errorMessage.value = reactive(ErrorRes);
+            } else {
+                alert("新規登録に失敗しました。");
+            }
         });
 };
 </script>

@@ -5,10 +5,15 @@
             <h1 class="page__title">お店リスト</h1>
             <form @submit.prevent>
                 <div class="input__box col">
-                    <input type="text" v-model="searchKey" />
+                    <input type="text" v-model="searchKey" required />
                     <button @click="keySearch">検索</button>
                 </div>
             </form>
+            <div class="searchClear" v-if="search">
+                検索ワード"{{ searchKey }}"<button @click="searchClear">
+                    クリア
+                </button>
+            </div>
             <div class="list__table">
                 <table class="list__table-inner">
                     <thead class="list__table-thead">
@@ -36,7 +41,7 @@
                     <template v-for="(item, i) in shopList" :key="item.i">
                         <tr>
                             <td class="list__table-td">
-                                <p>{{ i + 1 }}</p>
+                                <p>{{ item.listId }}</p>
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.name }}</p>
@@ -87,7 +92,7 @@
                     </template>
                 </table>
             </div>
-            <ul v-if="shopListDataTotal > 10" class="pagination">
+            <ul v-if="shopListDataTotal > 10 && !search" class="pagination">
                 <li
                     v-for="(link, i) in pageLinks"
                     :key="link"
@@ -116,24 +121,30 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { destroy } from "../../api/restaurantApi";
+import { onMounted, ref, computed, createApp } from "vue";
+import { destroy, restaurantDataGetAll } from "../../api/restaurantApi";
 import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { RestaurantData, PageNationData } from "../../ts/type/RestaurantType";
-const router = useRouter();
 
+const router = useRouter();
 const store = useStore();
+
 const searchKey = ref("");
+const search = ref(false);
 const shopList = ref();
 const shopListDataTotal = ref<number>(0);
 const current_page = ref(1);
 const last_page = ref(0);
 const pageLinks = ref();
 const pageLinksLength = ref(0);
+
+const listId = computed(() => {
+    return current_page.value * 10 - 9;
+});
 const getRestaurantData = async () => {
     const { data } = await axios.get<PageNationData>(
         `/api/gourmet?page=${current_page.value}`
@@ -141,29 +152,38 @@ const getRestaurantData = async () => {
     return data;
 };
 
-const shopDataGet = async () => {
+const createPageNation = async () => {
     const restaurantData: PageNationData = await getRestaurantData();
     last_page.value = restaurantData.last_page;
     pageLinksLength.value = restaurantData.links.length;
     pageLinks.value = restaurantData.links;
     shopListDataTotal.value = restaurantData.total;
-    const { data } = restaurantData;
-    // DBのitem.categorieはjsonなので変換する。
-    data.map((item) => {
-        item.categorie = JSON.parse(item.categorie);
-    });
-    shopList.value = data;
+};
+const shopDataGet = async () => {
+    try {
+        await createPageNation();
+        const restaurantData: PageNationData = await getRestaurantData();
+        const { data } = restaurantData;
+        // DBのitem.categorieはjsonなので変換する。
+        data.map((item, i) => {
+            item.listId = listId.value + i;
+            item.categorie = JSON.parse(item.categorie);
+        });
+        shopList.value = data;
+    } catch (e) {
+        alert("データ取得に失敗しました。");
+    }
 };
 const changePageNation = async (e) => {
     const label = e.target.dataset.label;
     if (current_page.value == label) return;
     current_page.value = Number(label);
-
     const { data } = await axios.get<PageNationData>(
         `/api/gourmet?page=${label}`
     );
     const linkData = data.data;
-    linkData.map((item) => {
+    linkData.map((item, i) => {
+        item.listId = listId.value + i;
         item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
@@ -176,7 +196,8 @@ const backPageNation = async () => {
         `/api/gourmet?page=${back}`
     );
     const linkData = data.data;
-    linkData.map((item) => {
+    linkData.map((item, i) => {
+        item.listId = listId.value + i;
         item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
@@ -189,18 +210,27 @@ const nextPageNation = async () => {
         `/api/gourmet?page=${next}`
     );
     const linkData = data.data;
-    linkData.map((item) => {
+    linkData.map((item, i) => {
+        item.listId = listId.value + i;
         item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
 };
-const keySearch = () => {
-    const data = shopList.value;
-    const searchList = data.filter((item: RestaurantData) => {
+const keySearch = async () => {
+    if (searchKey.value == "") return;
+    const dataAll = await restaurantDataGetAll();
+    dataAll.map((item: RestaurantData, i) => {
+        item.listId = listId.value + i;
+        item.categorie = JSON.parse(item.categorie);
+    });
+    const searchList = dataAll.filter((item: RestaurantData) => {
         return item.name == searchKey.value;
     });
-    searchKey.value = "";
     shopList.value = searchList;
+    search.value = true;
+};
+const searchClear = () => {
+    location.reload();
 };
 const edit = (e) => {
     const index = e.target.dataset.index;
@@ -216,6 +246,7 @@ const edit = (e) => {
         tel,
         user_id,
         categorie,
+        categoriId
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -227,6 +258,7 @@ const edit = (e) => {
         tel: tel,
         user_id: user_id,
         categorie: categorie,
+        categoriId:categoriId
     });
     router.push({
         name: "ShopRegisterEdit",
@@ -277,7 +309,7 @@ const delConfOpen = async (id: number) => {
                 await shopDataGet();
             })
             .catch((Error) => {
-                throw new Error(`${Error.message}: destroyApi失敗`);
+                alert("削除に失敗しました。");
             });
     }
 };
@@ -291,6 +323,7 @@ const storeClear = () => {
         comment: "",
         tel: "",
         categorie: [],
+        categorieId:[]
     });
 };
 onMounted(() => {
@@ -303,7 +336,10 @@ onMounted(() => {
 .page__title {
     margin-bottom: 2rem;
 }
-
+.searchClear {
+    color: #000;
+    margin-top: 0.5rem;
+}
 .list__table {
     margin-top: 3rem;
     border: 1px solid #000;

@@ -1,7 +1,6 @@
 <template>
     <div class="wrapeer">
         <SideBar />
-
         <main>
             <h1>ダッシュボード</h1>
         </main>

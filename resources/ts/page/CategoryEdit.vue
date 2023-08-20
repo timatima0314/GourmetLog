@@ -78,7 +78,7 @@ const updataCategory = async () => {
                 const ErrorRes = err.response.data.errors;
                 valiErrorMessage.value = ErrorRes;
             } else {
-                // errorMessage.value = err.response.data.errorMessage;
+                alert('カテゴリー修正に失敗しました。');
             }
         });
 };

@@ -88,7 +88,7 @@ const createCategory = async () => {
                 const ErrorRes = err.response.data.errors;
                 valiErrorMessage.value = ErrorRes;
             } else {
-                // errorMessage.value = err.response.data.errorMessage;
+                alert('カテゴリー登録に失敗しました。');
             }
         });
     getCategory();
@@ -103,8 +103,8 @@ const delConfOpen = async (id: number) => {
             .then(async () => {
                 await getCategory();
             })
-            .catch((Error) => {
-                throw new Error(`${Error.message}: destroyApi失敗`);
+            .catch(() => {
+                alert('カテゴリー削除に失敗しました。');
             });
     }
 };
