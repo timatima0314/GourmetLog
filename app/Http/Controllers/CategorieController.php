@@ -41,22 +41,6 @@ class CategorieController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Categorie $categorie)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Categorie $categorie)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(CategorieRequest $request, $id)
