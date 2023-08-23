@@ -40,22 +40,26 @@
         </main>
     </div>
 </template>
+
 <script lang="ts" setup>
+// カテゴリー編集ページ
 import SideBar from "../components/SideBar.vue";
 import { categorieGet, categorieUpdate } from "../../api/categorieApi";
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { Categorie } from "../type/RestaurantType";
+
 const router = useRouter();
 const route = useRoute();
 
+const propEditId = ref(); //DB::カテゴリーid
+
 const categorieNameEdit = ref("");
-const propEditId = ref();
-const propIndexId = ref();
 const valiErrorMessage = ref({
     name: "",
 });
 
+// DB::カテゴリーのidを検索してcategorieNameEditへ代入
 const editItemGet = async () => {
     await categorieGet().then((item) => {
         const filterData = item.filter((val: Categorie) => {
@@ -78,16 +82,17 @@ const updataCategory = async () => {
                 const ErrorRes = err.response.data.errors;
                 valiErrorMessage.value = ErrorRes;
             } else {
-                alert('カテゴリー修正に失敗しました。');
+                alert("カテゴリー修正に失敗しました。");
             }
         });
 };
+
 const previousScreen = () => {
     router.push("/category_register");
 };
+
 onMounted(() => {
-    propEditId.value = route.query.id;
-    propIndexId.value = route.query.indexId;
+    propEditId.value = route.query.id;  // クエリ文字列,DB::カテゴリーid
     editItemGet();
 });
 </script>

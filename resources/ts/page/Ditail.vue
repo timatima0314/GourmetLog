@@ -43,7 +43,8 @@
                         <div class="item__box column">
                             <div class="item__title">料理写真:</div>
                             <div class="item__date">
-                                <img v-if="food_picture"
+                                <img
+                                    v-if="food_picture"
                                     width="250"
                                     height="180"
                                     :src="`storage/${food_picture}`"
@@ -53,7 +54,8 @@
                         <div class="item__box column">
                             <div class="item__title">Google Map:</div>
                             <div class="item__date">
-                                <iframe v-if="map_url"
+                                <iframe
+                                    v-if="map_url"
                                     :src="`https://maps.google.co.jp/maps?output=embed&q=${map_url}`"
                                     width="300"
                                     height="200"
@@ -77,9 +79,7 @@
                         </div>
                         <div class="button__box">
                             <router-link to="/list">
-                                <button class="back">
-                                    お店リストに戻る
-                                </button>
+                                <button class="back">お店リストに戻る</button>
                             </router-link>
                         </div>
                     </div>
@@ -89,13 +89,16 @@
     </div>
 </template>
 <script lang="ts" setup>
+// 詳細ページ
 import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
 import { computed } from "vue";
+
 const store = useStore();
-const lengths = store.state.restaurantData.length - 1;
+
+const result = store.state.restaurantData.length - 1; // srote.state.restaurantDataの最後のdata。つまり登録したいdata.
 const restaurantData = computed(() => {
-    return store.state.restaurantData[lengths];
+    return store.state.restaurantData[result];
 });
 const {
     name,

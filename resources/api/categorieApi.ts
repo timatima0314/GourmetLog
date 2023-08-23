@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { Categorie } from '../ts/type/RestaurantType';
+
+// DB::カテゴリー取得
 const categorieGet = async () => {
     const { data } = await axios.get<[Categorie]>(`/api/categorie/`);
     return data;
 };
 
+// DB::カテゴリー新規登録
 const categorieCreate = async ({
     name,
     user_id,
@@ -15,6 +18,8 @@ const categorieCreate = async ({
     });
     return data;
 };
+
+// DB::カテゴリー更新
 const categorieUpdate = async ({
     name,
     id
@@ -26,6 +31,8 @@ const categorieUpdate = async ({
             }
         )
 }
+
+// DB::カテゴリー削除
 const destroy = async (id: number) => {
     const { data } = await axios.delete(`/api/categorie/${id}`);
     return data;

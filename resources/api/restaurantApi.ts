@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { RestaurantData } from '../ts/type/RestaurantType';
+
+// DB::restaurant全取得
 const restaurantDataGetAll = async () => {
     const { data } = await axios.get<[RestaurantData]>(`/api/get_all`);
     return data
 }
+
+// DB::restaurant登録
 const restaurantCreate = async ({
     name,
     name_katakana,
@@ -31,6 +35,8 @@ const restaurantCreate = async ({
     }, config)
 
 };
+
+// DB::restaurant更新
 const restaurantUpdate = async ({
     name,
     name_katakana,
@@ -59,6 +65,8 @@ const restaurantUpdate = async ({
             }, config
         )
 }
+
+// DB::restaurant削除
 const destroy = async (id: number) => {
     const { data } = await axios.delete(`/api/gourmet/${id}`);
     return data;

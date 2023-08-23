@@ -135,12 +135,12 @@
                                 登録する
                             </button>
                             <button
-                            v-else
-                            class="register"
-                            @click="update(propEditId)"
+                                v-else
+                                class="register"
+                                @click="update(propEditId)"
                             >
-                            更新する
-                        </button>
+                                更新する
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -149,6 +149,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+// restaurant登録確認ページ
 import SideBar from "../components/SideBar.vue";
 import { restaurantCreate, restaurantUpdate } from "../../api/restaurantApi";
 import { useStore } from "../store/store";
@@ -156,9 +157,13 @@ import * as MutationTypes from "../store/mutationTypes";
 import router from "../router";
 import { useRoute } from "vue-router";
 import { computed, ref, onMounted } from "vue";
+import { authGet } from "../../api/authApi";
+
 const _router = useRoute();
-const propEditId = ref();
+const propEditId = ref(); // 編集するDB::restaurantId
+const propUserId = ref();
 const store = useStore();
+
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
 const valiErrorMessage = ref({
@@ -169,10 +174,11 @@ const valiErrorMessage = ref({
     tel: "",
     categorie: "",
 });
-const length = store.state.restaurantData.length - 1;
+const result = store.state.restaurantData.length - 1; // srote.state.restaurantDataの最後のdata。つまり登録したいdata.
 const restaurantData = computed(() => {
-    return store.state.restaurantData[length];
+    return store.state.restaurantData[result];
 });
+
 const {
     name,
     name_katakana,
@@ -185,11 +191,14 @@ const {
     categorie,
     categorieId,
 } = restaurantData.value;
+
+// リクエストヘッダー
 const config = {
     headers: {
         "content-type": "multipart/form-data",
     },
 };
+
 const storeClear = () => {
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: "",
@@ -202,6 +211,7 @@ const storeClear = () => {
         categorie: [],
     });
 };
+
 const update = async (id: number) => {
     await restaurantUpdate({
         name,
@@ -226,7 +236,6 @@ const update = async (id: number) => {
 };
 
 const shopDataCreate = async () => {
-   
     await restaurantCreate({
         name,
         name_katakana,
@@ -253,23 +262,36 @@ const shopDataCreate = async () => {
             }
         });
 };
+
+// 料理画像表示
 const imgShow = () => {
     if (!food_picture) return;
+    // propEditIdがtrueの時は編集モードである。
     if (propEditId.value) {
+        // food_pictureがstringの場合,すでに登録されている画像である。
         const editJudge = typeof food_picture === "string";
         if (editJudge) {
             fileUrlEdit.value = food_picture;
         } else {
+            // food_poctureがfileの場合、新たな画像で更新する。
             fileUrlEdit.value = "";
             fileUrl.value = URL.createObjectURL(food_picture);
         }
     } else {
+        // 編集モードでなく登録モードである。
         fileUrl.value = URL.createObjectURL(food_picture);
     }
 };
 
+const authUserIdGet = async () => {
+    await authGet().then((res) => {
+        propUserId.value = res.user.id;
+    });
+};
+
 onMounted(() => {
-    propEditId.value = _router.query.id;
+    propEditId.value = _router.query.id; // クエリ文字列,編集したいDB::restaurantId
+    authUserIdGet();
     imgShow();
 });
 

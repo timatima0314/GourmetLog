@@ -57,7 +57,6 @@
                                 >
                                     ログイン
                                 </button>
-
                                 <span>パスワードをお忘れですか？</span>
                             </td>
                         </tr>
@@ -69,9 +68,10 @@
 </template>
 
 <script setup lang="ts">
+// ログインページ
 import Header from "../components/Header.vue";
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import router from "../router";
 import { Login } from "../type/AuthType";
 

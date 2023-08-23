@@ -7,6 +7,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+// ホームページ　
 import Header from "../components/Header.vue";
 </script>
 <style lang="scss" scoped>

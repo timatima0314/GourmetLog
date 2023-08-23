@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+// 新規登録ページ
 import Header from "../components/Header.vue";
 import { ref, reactive } from "vue";
 import { authSingUp, authLogin } from "../../api/authApi";

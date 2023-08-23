@@ -93,6 +93,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+// DB::restaurant登録、編集ページ
 import { ref, reactive, computed, onMounted } from "vue";
 import SideBar from "../components/SideBar.vue";
 import { categorieGet } from "../../api/categorieApi";
@@ -101,20 +102,25 @@ import * as MutationTypes from "../store/mutationTypes";
 import { useRoute } from "vue-router";
 import router from "../router";
 import { Categorie } from "../type/RestaurantType";
+import { authGet } from "../../api/authApi";
+
+const _router = useRoute();
 
 const fileUrl = ref("");
 const fileUrlEdit = ref("");
-const _router = useRoute();
-const propUserId = ref();
-const propEditId = ref();
+const propUserId = ref(); // authUserId
+const propEditId = ref(); // 編集するrestaurantId
 const categorieList = ref<[Categorie]>();
+const store = useStore();
 
+// 料理画像file_input
 const fileSelected = (event) => {
     const file = event.target.files[0];
     form.food_picture = file;
     fileUrlEdit.value = "";
     fileUrl.value = URL.createObjectURL(file);
 };
+
 const form = reactive({
     name: "",
     name_katakana: "",
@@ -125,13 +131,14 @@ const form = reactive({
     tel: "",
     user_id: propUserId,
     checkCategorie: [],
-    checkCategorieId:<any>[]
+    checkCategorieId: <any>[],
 });
-const store = useStore();
-const lengths = store.state.restaurantData.length - 1;
+
+const result = store.state.restaurantData.length - 1; // srote.state.restaurantDataの最後のdata。つまり登録したいdata.
 const restaurantData = computed(() => {
-    return store.state.restaurantData[lengths];
+    return store.state.restaurantData[result];
 });
+
 const {
     name,
     name_katakana,
@@ -142,9 +149,10 @@ const {
     tel,
     user_id,
     categorie,
-    categorieId
+    categorieId,
 } = restaurantData.value;
 
+// srote.state.restaurantDataを代入。つまり編集するデータ。
 const listItemGet = () => {
     form.name = name;
     form.name_katakana = name_katakana;
@@ -155,15 +163,22 @@ const listItemGet = () => {
     form.tel = tel;
     form.user_id = user_id;
     form.checkCategorie = categorie;
-    form.checkCategorieId=categorieId
+    form.checkCategorieId = categorieId;
 };
-const inputCategorieId=(e)=>{
-    console.log(e.target.dataset.id)
-    form.checkCategorieId.push(e.target.dataset.id)
-}
+const inputCategorieId = (e) => {
+    form.checkCategorieId.push(e.target.dataset.id);
+};
+
+const authUserIdGet = async () => {
+    await authGet().then((res) => {
+        propUserId.value = res.user.id;
+    });
+};
+
 onMounted(async () => {
     await listItemGet();
-    propUserId.value = _router.query.user_id;
+    authUserIdGet();
+    // propUserId.value = _router.query.user_id;
 
     propEditId.value = _router.query.id;
     if (food_picture) {
@@ -185,7 +200,7 @@ const toConfirmation = () => {
         tel: form.tel,
         user_id: form.user_id,
         categorie: form.checkCategorie,
-        categorieId:form.checkCategorieId
+        categorieId: form.checkCategorieId,
     });
     propEditId
         ? router.push({

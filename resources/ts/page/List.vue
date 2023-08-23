@@ -121,7 +121,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, computed, createApp } from "vue";
+// お店リストページ
+import { onMounted, ref, computed } from "vue";
 import { destroy, restaurantDataGetAll } from "../../api/restaurantApi";
 import SideBar from "../components/SideBar.vue";
 import { useStore } from "../store/store";
@@ -134,10 +135,10 @@ const router = useRouter();
 const store = useStore();
 
 const searchKey = ref("");
-const search = ref(false);
-const shopList = ref();
-const shopListDataTotal = ref<number>(0);
-const current_page = ref(1);
+const search = ref(false); // tureであれば検索状態
+const shopList = ref(); // DB::restaurantData(PageNation数,つまり１０件)
+const shopListDataTotal = ref<number>(0); //DB::restaurantData全て
+const current_page = ref(1); //現在のページ
 const last_page = ref(0);
 const pageLinks = ref();
 const pageLinksLength = ref(0);
@@ -145,6 +146,8 @@ const pageLinksLength = ref(0);
 const listId = computed(() => {
     return current_page.value * 10 - 9;
 });
+
+// DB::restaurantData10件を取得。
 const getRestaurantData = async () => {
     const { data } = await axios.get<PageNationData>(
         `/api/gourmet?page=${current_page.value}`
@@ -164,7 +167,7 @@ const shopDataGet = async () => {
         await createPageNation();
         const restaurantData: PageNationData = await getRestaurantData();
         const { data } = restaurantData;
-        // DBのitem.categorieはjsonなので変換する。
+        // DB::restaurant.categorieはjsonなので変換する。
         data.map((item, i) => {
             item.listId = listId.value + i;
             item.categorie = JSON.parse(item.categorie);
@@ -175,19 +178,21 @@ const shopDataGet = async () => {
     }
 };
 const changePageNation = async (e) => {
-    const label = e.target.dataset.label;
+    const label = e.target.dataset.label; //移行したいPageNation番号
     if (current_page.value == label) return;
+
     current_page.value = Number(label);
     const { data } = await axios.get<PageNationData>(
         `/api/gourmet?page=${label}`
     );
-    const linkData = data.data;
+    const linkData = data.data; // 移行先のdata
     linkData.map((item, i) => {
         item.listId = listId.value + i;
         item.categorie = JSON.parse(item.categorie);
     });
-    shopList.value = linkData;
+    shopList.value = linkData; // 移行先のdataに更新。
 };
+
 const backPageNation = async () => {
     if (current_page.value === 1) return;
     const back = current_page.value - 1;
@@ -202,6 +207,7 @@ const backPageNation = async () => {
     });
     shopList.value = linkData;
 };
+
 const nextPageNation = async () => {
     if (current_page.value == last_page.value) return;
     const next = current_page.value + 1;
@@ -216,6 +222,8 @@ const nextPageNation = async () => {
     });
     shopList.value = linkData;
 };
+
+// 検索
 const keySearch = async () => {
     if (searchKey.value == "") return;
     const dataAll = await restaurantDataGetAll();
@@ -229,9 +237,12 @@ const keySearch = async () => {
     shopList.value = searchList;
     search.value = true;
 };
+
 const searchClear = () => {
     location.reload();
 };
+
+// 編集ページへ
 const edit = (e) => {
     const index = e.target.dataset.index;
     const id = e.target.dataset.id;
@@ -246,7 +257,7 @@ const edit = (e) => {
         tel,
         user_id,
         categorie,
-        categoriId
+        categoriId,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -258,7 +269,7 @@ const edit = (e) => {
         tel: tel,
         user_id: user_id,
         categorie: categorie,
-        categoriId:categoriId
+        categoriId: categoriId,
     });
     router.push({
         name: "ShopRegisterEdit",
@@ -268,6 +279,8 @@ const edit = (e) => {
         },
     });
 };
+
+// 編集画面へ
 const goDitail = (e) => {
     const index = e.target.dataset.index;
     const id = e.target.dataset.id;
@@ -280,7 +293,6 @@ const goDitail = (e) => {
         map_url,
         comment,
         tel,
-        user_id,
         categorie,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
@@ -301,6 +313,7 @@ const goDitail = (e) => {
     });
 };
 
+// 削除
 const delConfOpen = async (id: number) => {
     const delConf = confirm("本当に削除してもよろしいでしょうか？");
     if (delConf) {
@@ -308,7 +321,7 @@ const delConfOpen = async (id: number) => {
             .then(async () => {
                 await shopDataGet();
             })
-            .catch((Error) => {
+            .catch(() => {
                 alert("削除に失敗しました。");
             });
     }
@@ -323,7 +336,7 @@ const storeClear = () => {
         comment: "",
         tel: "",
         categorie: [],
-        categorieId:[]
+        categorieId: [],
     });
 };
 onMounted(() => {

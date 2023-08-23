@@ -34,9 +34,7 @@ main {
 body {
     font-family: "Noto Sans JP", sans-serif;
 }
-// h1 {
-//     font-size: 2rem;
-// }
+
 input,
 select {
     padding: 0.5rem;
@@ -74,7 +72,7 @@ button {
 .edit,
 .register,
 .loginForm__login,
-.singupForm__singUp{
+.singupForm__singUp {
     background-color: blue;
     color: #fff;
 }
@@ -86,11 +84,11 @@ button {
     background-color: #fff;
     color: #000;
 }
-.required{
+.required {
     color: red;
     margin-left: 0.5rem;
 }
-.err{
+.err {
     font-size: 0.8rem;
     color: red;
 }

@@ -62,17 +62,20 @@
     </div>
 </template>
 <script lang="ts" setup>
+// カテゴリー新規登録ページ
 import SideBar from "../components/SideBar.vue";
 import { categorieGet, categorieCreate, destroy } from "../../api/categorieApi";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Categorie } from "../type/RestaurantType";
+import { authGet } from "../../api/authApi";
+
 const router = useRouter();
 const route = useRoute();
 
 const formName = ref("");
-const listCategorie = ref<[Categorie]>();
-const propUserId = ref();
+const listCategorie = ref<[Categorie]>(); //DB::カテゴリーdeta
+const propUserId = ref(); // authUserId
 const valiErrorMessage = ref({
     name: "",
 });
@@ -88,14 +91,16 @@ const createCategory = async () => {
                 const ErrorRes = err.response.data.errors;
                 valiErrorMessage.value = ErrorRes;
             } else {
-                alert('カテゴリー登録に失敗しました。');
+                alert("カテゴリー登録に失敗しました。");
             }
         });
     getCategory();
 };
+
 const getCategory = async () => {
     listCategorie.value = await categorieGet();
 };
+
 const delConfOpen = async (id: number) => {
     const delConf = confirm("本当に削除してもよろしいでしょうか？");
     if (delConf) {
@@ -104,10 +109,12 @@ const delConfOpen = async (id: number) => {
                 await getCategory();
             })
             .catch(() => {
-                alert('カテゴリー削除に失敗しました。');
+                alert("カテゴリー削除に失敗しました。");
             });
     }
 };
+
+// DB::カテゴリーidを所得しクエリ文字列とし,編集ページへ
 const edit = (e) => {
     const id = e.target.dataset.id;
     router.push({
@@ -117,7 +124,15 @@ const edit = (e) => {
         },
     });
 };
+
+const authUserIdGet = async () => {
+    await authGet().then((res) => {
+        propUserId.value = res.user.id;
+    });
+};
+
 onMounted(() => {
+    authUserIdGet();
     getCategory();
     propUserId.value = route.query.user_id;
 });
