@@ -29,7 +29,7 @@ class RestaurantRequest extends FormRequest
             'comment' => 'required|max:300',
             'review' => ['required', 'regex:/^[1-5]+$/'],
             'tel' => ['regex:/^[0-9-]+$/', 'nullable'],
-            // 'categorie' => 'required'
+            'categorieId' => 'required'
 
         ];
     }
@@ -44,7 +44,7 @@ class RestaurantRequest extends FormRequest
             'comment.required' => ':attributeは必須です。',
             'comment.max' => ':attributeは300文字以内でです。',
             'tel.regex' => ':attributeを入力してください。',
-            // 'categorie.required' => ':attributeは必須です。',
+            'categorieId.required' => ':attributeは必須です。',
             'review.required' => ':attributeは必須です。',
             'review.regex' => ':attributeは1~5の数値で入力ください。'
         ];
@@ -57,7 +57,7 @@ class RestaurantRequest extends FormRequest
             'comment' => 'コメント',
             'review' => 'レビュー',
             'tel' => '電話番号',
-            // 'categorie' => 'カテゴリー'
+            'categorieId' => 'カテゴリー'
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -62,7 +62,7 @@ class RestaurantController extends Controller
         $restaurant->user_id = $request->user_id;
         $restaurant->save();
         $restaurant->categories()->sync($request->get('categorieId', []));
-
+dump($request->all());
         return $restaurant
             ? response()->json($restaurant, 201)
             : response()->json([], 500);

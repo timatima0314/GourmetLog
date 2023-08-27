@@ -45,8 +45,8 @@
                                 </div>
                             </div>
                             <div class="err">
-                                <div v-if="valiErrorMessage.categorie">
-                                    {{ valiErrorMessage.categorie[0] }}
+                                <div v-if="valiErrorMessage.categorieId">
+                                    {{ valiErrorMessage.categorieId[0] }}
                                 </div>
                             </div>
                         </div>
@@ -173,7 +173,7 @@ const valiErrorMessage = ref({
     comment: "",
     review: "",
     tel: "",
-    categorie: "",
+    categorieId: "",
 });
 const result = store.state.restaurantData.length - 1; // srote.state.restaurantDataの最後のdata。つまり登録したいdata.
 const restaurantData = computed(() => {
