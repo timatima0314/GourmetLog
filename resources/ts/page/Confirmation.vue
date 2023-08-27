@@ -36,9 +36,10 @@
                             <div class="item__box">
                                 <div class="item__title">カテゴリー:</div>
                                 <div
-                                    v-for="item in restaurantData.categorie"
+                                    v-for="item in restaurantData.categories"
                                     :key="item"
                                     class="item__date"
+                                    style="margin-right: 0.8rem;"
                                 >
                                     {{ item }}
                                 </div>
@@ -188,7 +189,7 @@ const {
     review,
     tel,
     user_id,
-    categorie,
+    categories,
     categorieId,
 } = restaurantData.value;
 
@@ -222,7 +223,7 @@ const update = async (id: number) => {
         comment,
         tel,
         user_id,
-        categorie,
+        categorieId,
         config,
         id,
     })
@@ -245,7 +246,7 @@ const shopDataCreate = async () => {
         review,
         tel,
         user_id,
-        categorie,
+        categories,
         categorieId,
         config,
     })

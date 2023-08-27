@@ -5,6 +5,7 @@ type Categorie = {
     name: string;
     updated_at: Date;
     user_id: number;
+    select?:boolean
 };
 
 type RestaurantData = {
@@ -16,7 +17,7 @@ type RestaurantData = {
     comment: string,
     tel: string,
     user_id: number,
-    categorie: any,
+    categories?: any,
     categorieId?:any,
     config: any,
     listId?: number,

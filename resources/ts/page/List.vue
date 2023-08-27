@@ -47,12 +47,11 @@
                                 <p>{{ item.name }}</p>
                             </td>
                             <td class="list__table-td">
-                                <span
-                                    v-for="one in item.categorie"
-                                    :key="one"
-                                    style="margin-right: 0.5rem"
-                                    >{{ one }}</span
-                                >
+                                <span v-for="one in item.categories" :key="one">
+                                    <span v-if="item.categories" style="margin-right: 0.5rem;">
+                                        {{ one.name }}
+                                    </span>
+                                </span>
                             </td>
                             <td class="list__table-td">
                                 <p>{{ item.review }}</p>
@@ -164,13 +163,14 @@ const createPageNation = async () => {
 };
 const shopDataGet = async () => {
     try {
+        const all = await restaurantDataGetAll();
         await createPageNation();
         const restaurantData: PageNationData = await getRestaurantData();
         const { data } = restaurantData;
         // DB::restaurant.categorieはjsonなので変換する。
         data.map((item, i) => {
             item.listId = listId.value + i;
-            item.categorie = JSON.parse(item.categorie);
+            // item.categorie = JSON.parse(item.categorie);
         });
         shopList.value = data;
     } catch (e) {
@@ -188,7 +188,7 @@ const changePageNation = async (e) => {
     const linkData = data.data; // 移行先のdata
     linkData.map((item, i) => {
         item.listId = listId.value + i;
-        item.categorie = JSON.parse(item.categorie);
+        // item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData; // 移行先のdataに更新。
 };
@@ -203,7 +203,7 @@ const backPageNation = async () => {
     const linkData = data.data;
     linkData.map((item, i) => {
         item.listId = listId.value + i;
-        item.categorie = JSON.parse(item.categorie);
+        // item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
 };
@@ -218,7 +218,7 @@ const nextPageNation = async () => {
     const linkData = data.data;
     linkData.map((item, i) => {
         item.listId = listId.value + i;
-        item.categorie = JSON.parse(item.categorie);
+        // item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
 };
@@ -229,7 +229,7 @@ const keySearch = async () => {
     const dataAll = await restaurantDataGetAll();
     dataAll.map((item: RestaurantData, i) => {
         item.listId = listId.value + i;
-        item.categorie = JSON.parse(item.categorie);
+        // item.categorie = JSON.parse(item.categorie);
     });
     const searchList = dataAll.filter((item: RestaurantData) => {
         return item.name == searchKey.value;
@@ -243,10 +243,12 @@ const searchClear = () => {
 };
 
 // 編集ページへ
-const edit = (e) => {
+const edit = async(e) => {
     const index = e.target.dataset.index;
     const id = e.target.dataset.id;
-
+    shopList.value[index].categories.map((item) => {
+        item.select = true;
+    });
     const {
         name,
         name_katakana,
@@ -256,8 +258,8 @@ const edit = (e) => {
         comment,
         tel,
         user_id,
-        categorie,
-        categoriId,
+        categories,
+        // categoriId,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -268,8 +270,8 @@ const edit = (e) => {
         comment: comment,
         tel: tel,
         user_id: user_id,
-        categorie: categorie,
-        categoriId: categoriId,
+        categories: categories,
+        // categoriId: categoriId,
     });
     router.push({
         name: "ShopRegisterEdit",
@@ -280,7 +282,7 @@ const edit = (e) => {
     });
 };
 
-// 編集画面へ
+// 詳細画面へ
 const goDitail = (e) => {
     const index = e.target.dataset.index;
     const id = e.target.dataset.id;
@@ -293,7 +295,7 @@ const goDitail = (e) => {
         map_url,
         comment,
         tel,
-        categorie,
+        categories,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -303,7 +305,7 @@ const goDitail = (e) => {
         map_url: map_url,
         comment: comment,
         tel: tel,
-        categorie: categorie,
+        categories: categories,
     });
     router.push({
         name: "Ditail",
@@ -336,7 +338,7 @@ const storeClear = () => {
         comment: "",
         tel: "",
         categorie: [],
-        categorieId: [],
+        // categorieId: [],
     });
 };
 onMounted(() => {

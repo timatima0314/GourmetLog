@@ -20,6 +20,6 @@ class Categorie extends Model
     ];
     public function restaurants(): BelongsToMany
     {
-        return $this->belongsToMany(Restaurant::class, 'categoriy_tags','restaurant_id','category_id');
+        return $this->belongsToMany(Restaurant::class);
     }
 }

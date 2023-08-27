@@ -26,10 +26,10 @@
                                 <div class="item__title">カテゴリー:</div>
                                 <div class="item__date">
                                     <span
-                                        v-for="one in categorie"
+                                        v-for="one in categories"
                                         :key="one"
                                         style="margin-right: 0.5rem"
-                                        >{{ one }}</span
+                                        >{{ one.name }}</span
                                     >
                                 </div>
                             </div>
@@ -109,7 +109,7 @@ const {
     review,
     tel,
     user_id,
-    categorie,
+    categories,
 } = restaurantData.value;
 </script>
 <style lang="scss" scoped>

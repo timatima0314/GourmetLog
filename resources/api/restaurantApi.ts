@@ -17,7 +17,7 @@ const restaurantCreate = async ({
     review,
     tel,
     user_id,
-    categorie,
+    // categorie,
     categorieId,
     config
 }: RestaurantData) => {
@@ -30,7 +30,7 @@ const restaurantCreate = async ({
         review,
         tel,
         user_id,
-        categorie,
+        // categorie,
         categorieId
     }, config)
 
@@ -47,7 +47,7 @@ const restaurantUpdate = async ({
     tel,
     user_id,
     id,
-    categorie,
+    categorieId,
     config
 }: RestaurantData) => {
     await axios
@@ -61,7 +61,7 @@ const restaurantUpdate = async ({
                 comment,
                 tel,
                 user_id,
-                categorie
+                categorieId
             }, config
         )
 }

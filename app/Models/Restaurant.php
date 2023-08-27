@@ -16,10 +16,12 @@ class Restaurant extends Model
 
     protected $fillable = [
         'user_id', 'name', 'name_katakana', 'review',
-        'food_picture', 'map_url', 'comment', 'tel', 'categorie', 'deleted_at', 'categorieId'
-    ];
+        'food_picture', 'map_url', 'comment', 'tel', 
+        // 'categorie',
+         'deleted_at', 'categorieId'];
+
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Categorie::class, 'categoriy_tags','restaurant_id','category_id');
+        return $this->belongsToMany(Categorie::class);
     }
 }

@@ -17,18 +17,16 @@
                         <dev>カテゴリー<span class="required">*</span></dev>
                         <ul class="input__checkbox-list">
                             <li
-                                v-for="item in categorieList"
-                                :key="item.id"
+                                v-for="(item, i) in categorieList"
+                                :key="i"
                                 class="input__checkbox-item"
                             >
                                 <input
                                     class="input__checkbox"
                                     type="checkbox"
                                     :value="item.name"
-                                    :data-id="item.id"
-                                    @click="inputCategorieId"
-                                    v-model="form.checkCategorie"
-                                /><label>{{ item.name }}{{ item.id }}</label>
+                                    v-model="item.select"
+                                /><label>{{ item.name }}</label>
                             </li>
                         </ul>
                     </div>
@@ -112,7 +110,6 @@ const propUserId = ref(); // authUserId
 const propEditId = ref(); // 編集するrestaurantId
 const categorieList = ref<[Categorie]>();
 const store = useStore();
-
 // 料理画像file_input
 const fileSelected = (event) => {
     const file = event.target.files[0];
@@ -130,15 +127,34 @@ const form = reactive({
     comment: "",
     tel: "",
     user_id: propUserId,
-    checkCategorie: [],
+    checkCategorie: <any>[],
     checkCategorieId: <any>[],
 });
+const inputCategorieId = () => {
+    if (!categorieList.value) return;
+    let _input: any = [];
+    categorieList.value.map((item) => {
+        if (item.select) {
+            _input.push(item.id);
+        }
+    });
+    return _input;
+};
+const inputCategorieName = () => {
+    if (!categorieList.value) return;
+    let _input: any = [];
+    categorieList.value.map((item) => {
+        if (item.select) {
+            _input.push(item.name);
+        }
+    });
+    return _input;
+};
 
 const result = store.state.restaurantData.length - 1; // srote.state.restaurantDataの最後のdata。つまり登録したいdata.
 const restaurantData = computed(() => {
     return store.state.restaurantData[result];
 });
-
 const {
     name,
     name_katakana,
@@ -148,12 +164,11 @@ const {
     review,
     tel,
     user_id,
-    categorie,
-    categorieId,
+    categories,
 } = restaurantData.value;
 
 // srote.state.restaurantDataを代入。つまり編集するデータ。
-const listItemGet = () => {
+const listItemGet = async () => {
     form.name = name;
     form.name_katakana = name_katakana;
     form.review = review;
@@ -162,11 +177,18 @@ const listItemGet = () => {
     form.comment = comment;
     form.tel = tel;
     form.user_id = user_id;
-    form.checkCategorie = categorie;
-    form.checkCategorieId = categorieId;
-};
-const inputCategorieId = (e) => {
-    form.checkCategorieId.push(e.target.dataset.id);
+    const _categories: any = [];
+    if (propEditId.value) {
+        categories.map((item: any) => {
+            _categories.push(item.name);
+        });
+        form.checkCategorie = _categories;
+    } else {
+        categorieList.value?.map((item) => {
+            _categories.push(item);
+        });
+        form.checkCategorie = _categories;
+    }
 };
 
 const authUserIdGet = async () => {
@@ -175,18 +197,40 @@ const authUserIdGet = async () => {
     });
 };
 
-onMounted(async () => {
-    await listItemGet();
-    authUserIdGet();
-    // propUserId.value = _router.query.user_id;
+//編集モードの時カテゴリーを選択されたrestaurantのカテゴリを代入.
+const categorieSelect = async () => {
+    let categoreItems = await categorieGet();
+    categoreItems.map((item, index, array) => {
+        categories.map((val) => {
+            if (item.name == val.name) {
+                array[index].select = true;
+            }
+        });
+    });
+    categorieList.value = categoreItems;
+};
 
+//新規登録時
+const categorieSelectNoEdit = async () => {
+    const categoreItems = await categorieGet();
+    categoreItems.map((item) => {
+        item.select = false;
+    });
+    categorieList.value = categoreItems;
+};
+
+onMounted(async () => {
     propEditId.value = _router.query.id;
+    authUserIdGet();
+    await listItemGet();
+
     if (food_picture) {
         propEditId.value
             ? (fileUrlEdit.value = food_picture)
             : (fileUrl.value = URL.createObjectURL(food_picture));
     }
-    categorieList.value = await categorieGet();
+    // propEditIdにidが代入時は編集モード、undefinedの場合新規登録モード
+    propEditId.value ? await categorieSelect() : await categorieSelectNoEdit();
 });
 
 const toConfirmation = () => {
@@ -199,8 +243,8 @@ const toConfirmation = () => {
         comment: form.comment,
         tel: form.tel,
         user_id: form.user_id,
-        categorie: form.checkCategorie,
-        categorieId: form.checkCategorieId,
+        categories: inputCategorieName(),
+        categorieId: inputCategorieId(),
     });
     propEditId
         ? router.push({

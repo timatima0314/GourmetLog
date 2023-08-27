@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Restaurant;
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +20,24 @@ class RestaurantController extends Controller
     }
     public function getAll()
     {
-        return Restaurant::where('user_id', Auth::id())->get();
+        $items = Restaurant::where('user_id', Auth::id())->get()->all();
+        foreach ($items as $item) {
+            $item->categories;
+            }
+        return $items;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Restaurant::where('user_id', Auth::id())->paginate(10);
+      $items =  Restaurant::where('user_id', Auth::id())->paginate(10);
+        foreach ($items as $item) {
+            $item->categories;
+            }
+
+        return $items;
+
     }
 
     /**
@@ -41,7 +52,6 @@ class RestaurantController extends Controller
             $request->file('food_picture')->storeAs('public/', $file_name);
             $restaurant->food_picture = $file_name;
         }
-        $json_data = json_encode($request->categorie, JSON_PRETTY_PRINT);
 
         $restaurant->name = $request->name;
         $restaurant->name_katakana = $request->name_katakana;
@@ -50,9 +60,8 @@ class RestaurantController extends Controller
         $restaurant->review = $request->review;
         $restaurant->tel = $request->tel;
         $restaurant->user_id = $request->user_id;
-        $restaurant->categorie = $json_data;
         $restaurant->save();
-        $restaurant->categories()->sync($request->get('categorieId',[]));
+        $restaurant->categories()->sync($request->get('categorieId', []));
 
         return $restaurant
             ? response()->json($restaurant, 201)
@@ -80,8 +89,7 @@ class RestaurantController extends Controller
         $restaurant->review = $request->review;
         $restaurant->tel = $request->tel;
         $restaurant->user_id = $request->user_id;
-        $json_data = json_encode($request->categorie, JSON_PRETTY_PRINT);
-        $restaurant->categorie = $json_data;
+        $restaurant->categories()->sync($request->get('categorieId', []));
 
         $restaurant->save();
         return $restaurant

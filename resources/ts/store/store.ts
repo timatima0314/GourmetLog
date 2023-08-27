@@ -2,6 +2,7 @@ import { InjectionKey } from 'vue';
 import { createStore, Store, useStore as baseUseStore } from "vuex";
 import * as MutationTypes from "./mutationTypes";
 import { ADD_RESTAURANT_DETA } from './mutationTypes';
+import { categorieCreate } from 'resources/api/categorieApi';
 
 type RestaurantData = {
     name: string,
@@ -12,7 +13,7 @@ type RestaurantData = {
     comment: string,
     tel: string,
     user_id: number,
-    categorie: [],
+    categories:any,
     categorieId:any
 };
 // stateの型定義
@@ -36,7 +37,7 @@ export const store = createStore<State>({
                 comment: '',
                 tel: '',
                 user_id: 1,
-                categorie: [],
+                categories:[],
                 categorieId:[]
             }
         ]
