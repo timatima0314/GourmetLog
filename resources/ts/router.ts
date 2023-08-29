@@ -8,6 +8,7 @@ import CategoryRegister from "./page/CategoryRegister.vue";
 import CategoryEdit from "./page/CategoryEdit.vue";
 import Confirmation from "./page/Confirmation.vue";
 import Ditail from "./page/Ditail.vue";
+import HotpepperDataDitail from "./page/HotpepperDataDitail.vue";
 import List from "./page/List.vue";
 import ShopRegisterEdit from "./page/ShopRegisterEdit.vue";
 import NotFound from "./page/NotFound.vue";
@@ -53,6 +54,11 @@ const routes = [
         path: "/ditail",
         name: "Ditail",
         component: Ditail
+    },
+    {
+        path: "/hotpepper_data_ditail",
+        name: "HotpepperDataDitail",
+        component: HotpepperDataDitail
     },
     {
         path: "/list",

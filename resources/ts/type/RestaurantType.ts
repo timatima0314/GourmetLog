@@ -5,7 +5,7 @@ type Categorie = {
     name: string;
     updated_at: Date;
     user_id: number;
-    select?:boolean
+    select?: boolean
 };
 
 type RestaurantData = {
@@ -18,7 +18,7 @@ type RestaurantData = {
     tel: string,
     user_id: number,
     categories?: any,
-    categorieId?:any,
+    categorieId?: any,
     config: any,
     listId?: number,
     id?: number
@@ -38,4 +38,18 @@ type PageNationData = {
     total: number,
     links: any
 }
-export { Categorie, RestaurantData, PageNationData }
+type PageNationHotpepperData = {
+    current_page: number,
+    data: any,
+    first_page_url: URL,
+    from: number,
+    last_page: number,
+    last_page_url: URL,
+    path: URL,
+    per_page: number,
+    prev_page_url: URL | null,
+    to: number,
+    total: number,
+    links: any
+}
+export { Categorie, RestaurantData, PageNationData, PageNationHotpepperData }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\CategoriyTagController;
+use App\Http\Controllers\HotpepperController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/get_all', [RestaurantController::class, 'getAll'])->middleware('auth');
     Route::apiResource('/gourmet', RestaurantController::class)->middleware('auth');
     Route::apiResource('/categorie', CategorieController::class)->middleware('auth');
-    Route::apiResource('/category_tag', CategoriyTagController::class)->middleware('auth');
+    Route::get('/index', [HotpepperController::class, 'index']);
 
     Route::post('/updata/{id}', [RestaurantController::class, 'updated']);
 });
