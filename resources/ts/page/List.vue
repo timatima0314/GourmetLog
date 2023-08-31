@@ -48,7 +48,10 @@
                             </td>
                             <td class="list__table-td">
                                 <span v-for="one in item.categories" :key="one">
-                                    <span v-if="item.categories" style="margin-right: 0.5rem;">
+                                    <span
+                                        v-if="item.categories"
+                                        style="margin-right: 0.5rem"
+                                    >
                                         {{ one.name }}
                                     </span>
                                 </span>
@@ -116,6 +119,7 @@
                     </div>
                 </li>
             </ul>
+            <button @click="csvDownload">CSVダウンロード</button>
         </main>
     </div>
 </template>
@@ -128,7 +132,10 @@ import { useStore } from "../store/store";
 import * as MutationTypes from "../store/mutationTypes";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { pick } from "lodash";
+
 import { RestaurantData, PageNationData } from "../../ts/type/RestaurantType";
+import { categorieCreate } from "resources/api/categorieApi";
 
 const router = useRouter();
 const store = useStore();
@@ -141,6 +148,8 @@ const current_page = ref(1); //現在のページ
 const last_page = ref(0);
 const pageLinks = ref();
 const pageLinksLength = ref(0);
+
+const csvList = ref([]);
 
 const listId = computed(() => {
     return current_page.value * 10 - 9;
@@ -243,7 +252,7 @@ const searchClear = () => {
 };
 
 // 編集ページへ
-const edit = async(e) => {
+const edit = async (e) => {
     const index = e.target.dataset.index;
     const id = e.target.dataset.id;
     shopList.value[index].categories.map((item) => {
@@ -341,9 +350,65 @@ const storeClear = () => {
         // categorieId: [],
     });
 };
-onMounted(() => {
+const csvDownload = () => {
+    const _pick: any = [];
+    shopList.value.map((item) => {
+        let csvData: any = pick(item, [
+            "listId",
+            "name",
+            "categories",
+            "review",
+            "comment",
+        ]);
+        _pick.push(csvData);
+    });
+    // ////////////////////出力するデータの作成////////////////////
+    // // CSV格納用 ※ヘッダーをあらかじめ設定しておく
+    const header = "ID,店名,カテゴリー,レビュー,コメント\r\n";
+    let data = header;
+    // // オブジェクトの中身を取り出してカンマ区切りにする
+    for (let sample of _pick) {
+        data += sample.listId + ",";
+        data += sample.name + ",";
+        for (let i = 0; i < sample.categories.length; i++) {
+            if (sample.categories.length == i + 1) {
+                data += sample.categories[i].name + ",";
+            } else {
+                data += sample.categories[i].name + "、";
+            }
+        }
+        data += sample.review + ",";
+        data += sample.comment;
+        // データ末尾に改行コードを追記
+        data += "\r\n";
+    }
+
+    ////////////////////CSV形式へ変換////////////////////
+    // BOMを付与（Excelで開いた際のの文字化け対策）
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    // CSV用バイナリデータを作成
+    const blob = new Blob([bom, data], { type: "text/csv" });
+    // blobからオブジェクトURLを作成
+    const objectUrl = URL.createObjectURL(blob);
+
+    ////////////////////ダウンロードリンクの作成とクリック////////////////////
+    // ダウンロードリンクを作成 ※HTMLのaタグを作成
+    const downloadLink = document.createElement("a");
+    // ファイル名の設定
+    const fileName = "sample.csv";
+    downloadLink.download = fileName;
+    // ダウンロードファイルを設定 ※aタグのhref属性
+    downloadLink.href = objectUrl;
+
+    // ダウンロードリンクを擬似的にクリック
+    downloadLink.click();
+
+    // ダウンロードリンクを削除
+    downloadLink.remove();
+};
+onMounted(async () => {
     storeClear();
-    shopDataGet();
+    await shopDataGet();
 });
 </script>
 
