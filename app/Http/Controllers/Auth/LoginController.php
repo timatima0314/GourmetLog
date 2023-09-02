@@ -9,6 +9,7 @@ use \Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Http\Requests\LoginRequest;
+use App\Models\UserLog;
 
 class LoginController extends Controller
 {
@@ -54,6 +55,26 @@ class LoginController extends Controller
 
         return response()->json(['errorMessage' => 'メールアドレス、またはパスワードが有効ではありません。'], 500);
     }
+
+    /**
+     * The user has been authenticated.
+     *ユーザーのログイン情報を記録
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function authenticated(Request $request)
+    {
+        dump($request->user_id);
+        $userLog = UserLog::create([
+            'ip' => $request->ip(),
+            'device' => $request->header('User-Agent'),
+            'user_id' => $request->user_id
+        ]);
+
+        return $userLog
+            ? response()->json($userLog, 201)
+            : response()->json([], 500);
+    }
+
     /**
      * ログアウト
      */

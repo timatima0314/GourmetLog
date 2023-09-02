@@ -43,6 +43,7 @@
                                 <input
                                     style="width: 1rem"
                                     type="checkbox"
+                                    v-model="loginRecordPermit"
                                     checked
                                 /><label>ログイン情報を記憶</label>
                             </td>
@@ -74,24 +75,32 @@ import axios from "axios";
 import { ref } from "vue";
 import router from "../router";
 import { Login } from "../type/AuthType";
+import { authGet } from "../../api/authApi";
 
 const errorMessage = ref("");
 const valiErrorMessage = ref({ email: "", password: "" });
 const password = ref("");
 const email = ref("");
+const loginRecordPermit = ref(true);
+
+const loginRecord = async (id: number) => {
+    await axios.post(`/api/authenticated`, { user_id: id });
+};
 
 const login = async () => {
     valiErrorMessage.value = { email: "", password: "" };
     errorMessage.value = "";
     await axios
         .get("/sanctum/csrf-cookie")
-        .then(() => {
+        .then(async () => {
             axios
                 .post<Login>(`/api/user/login`, {
                     password: password.value,
                     email: email.value,
                 })
-                .then(() => {
+                .then(async () => {
+                    const { user } = await authGet();
+                    loginRecordPermit.value ? loginRecord(user.id) : null;
                     router.push("/dash_board");
                 })
                 .catch((err) => {
