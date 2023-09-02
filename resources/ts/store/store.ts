@@ -1,8 +1,6 @@
 import { InjectionKey } from 'vue';
 import { createStore, Store, useStore as baseUseStore } from "vuex";
 import * as MutationTypes from "./mutationTypes";
-import { ADD_RESTAURANT_DETA } from './mutationTypes';
-import { categorieCreate } from 'resources/api/categorieApi';
 
 type RestaurantData = {
     name: string,

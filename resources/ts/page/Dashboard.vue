@@ -95,7 +95,8 @@ const current_page = ref(1); //現在のページ
 const last_page = ref(0);
 const pageLinks = ref();
 const pageLinksLength = ref(0);
-const get = async () => {
+
+const hotpepperDataGet = async () => {
     const { data } = await axios.get("/api/index");
     shopList.value = data.data;
 };
@@ -197,7 +198,7 @@ onMounted(async () => {
     storeClear();
     toDay();
     getUserName();
-    get();
+    hotpepperDataGet();
     await createPageNation();
 });
 </script>

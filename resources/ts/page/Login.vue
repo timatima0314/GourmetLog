@@ -77,8 +77,8 @@ import { Login } from "../type/AuthType";
 
 const errorMessage = ref("");
 const valiErrorMessage = ref({ email: "", password: "" });
-const password = ref("123");
-const email = ref("testtt@example.com");
+const password = ref("");
+const email = ref("");
 
 const login = async () => {
     valiErrorMessage.value = { email: "", password: "" };

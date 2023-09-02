@@ -119,7 +119,9 @@
                     </div>
                 </li>
             </ul>
-            <button @click="csvDownload">CSVダウンロード</button>
+            <button @click="csvDownload" style="margin-top: 1rem; float: right">
+                CSVダウンロード
+            </button>
         </main>
     </div>
 </template>
@@ -133,9 +135,11 @@ import * as MutationTypes from "../store/mutationTypes";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { pick } from "lodash";
-
-import { RestaurantData, PageNationData } from "../../ts/type/RestaurantType";
-import { categorieCreate } from "resources/api/categorieApi";
+import {
+    RestaurantData,
+    PageNationData,
+    CsvData,
+} from "../../ts/type/RestaurantType";
 
 const router = useRouter();
 const store = useStore();
@@ -148,8 +152,6 @@ const current_page = ref(1); //現在のページ
 const last_page = ref(0);
 const pageLinks = ref();
 const pageLinksLength = ref(0);
-
-const csvList = ref([]);
 
 const listId = computed(() => {
     return current_page.value * 10 - 9;
@@ -172,14 +174,12 @@ const createPageNation = async () => {
 };
 const shopDataGet = async () => {
     try {
-        const all = await restaurantDataGetAll();
         await createPageNation();
         const restaurantData: PageNationData = await getRestaurantData();
         const { data } = restaurantData;
         // DB::restaurant.categorieはjsonなので変換する。
         data.map((item, i) => {
             item.listId = listId.value + i;
-            // item.categorie = JSON.parse(item.categorie);
         });
         shopList.value = data;
     } catch (e) {
@@ -197,7 +197,6 @@ const changePageNation = async (e) => {
     const linkData = data.data; // 移行先のdata
     linkData.map((item, i) => {
         item.listId = listId.value + i;
-        // item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData; // 移行先のdataに更新。
 };
@@ -212,7 +211,6 @@ const backPageNation = async () => {
     const linkData = data.data;
     linkData.map((item, i) => {
         item.listId = listId.value + i;
-        // item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
 };
@@ -227,7 +225,6 @@ const nextPageNation = async () => {
     const linkData = data.data;
     linkData.map((item, i) => {
         item.listId = listId.value + i;
-        // item.categorie = JSON.parse(item.categorie);
     });
     shopList.value = linkData;
 };
@@ -238,7 +235,6 @@ const keySearch = async () => {
     const dataAll = await restaurantDataGetAll();
     dataAll.map((item: RestaurantData, i) => {
         item.listId = listId.value + i;
-        // item.categorie = JSON.parse(item.categorie);
     });
     const searchList = dataAll.filter((item: RestaurantData) => {
         return item.name == searchKey.value;
@@ -268,7 +264,6 @@ const edit = async (e) => {
         tel,
         user_id,
         categories,
-        // categoriId,
     } = shopList.value[index];
     store.commit(MutationTypes.ADD_RESTAURANT_DETA, {
         name: name,
@@ -280,7 +275,6 @@ const edit = async (e) => {
         tel: tel,
         user_id: user_id,
         categories: categories,
-        // categoriId: categoriId,
     });
     router.push({
         name: "ShopRegisterEdit",
@@ -347,13 +341,12 @@ const storeClear = () => {
         comment: "",
         tel: "",
         categorie: [],
-        // categorieId: [],
     });
 };
 const csvDownload = () => {
     const _pick: any = [];
     shopList.value.map((item) => {
-        let csvData: any = pick(item, [
+        let csvData: CsvData = pick(item, [
             "listId",
             "name",
             "categories",

@@ -27,40 +27,50 @@
         </div>
     </aside>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import { authLogout, authGet } from "../../api/authApi";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, defineComponent } from "vue";
 import router from "../router";
 
-const userId = ref<number>();
-const goShopRegisterEdit = () => {
-    router.push({
-        name: "ShopRegisterEdit",
-        query: {
-            user_id: userId.value,
-        },
-    });
-};
-const goCategoryRegister = () => {
-    router.push({
-        name: "CategoryRegister",
-        query: {
-            user_id: userId.value,
-        },
-    });
-};
+export default defineComponent({
+    setup() {
+        const userId = ref<number>();
+        const goShopRegisterEdit = () => {
+            router.push({
+                name: "ShopRegisterEdit",
+                query: {
+                    user_id: userId.value,
+                },
+            });
+        };
+        const goCategoryRegister = () => {
+            router.push({
+                name: "CategoryRegister",
+                query: {
+                    user_id: userId.value,
+                },
+            });
+        };
 
-const logout = async () => {
-    await authLogout().catch(() => alert("ログアウトに失敗しました。"));
-};
-onMounted(async () => {
-    await authGet()
-        .then((res) => {
-            userId.value = res.user.id;
-        })
-        .catch(() => {
-            router.push("/login");
+        const logout = async () => {
+            await authLogout().catch(() => alert("ログアウトに失敗しました。"));
+        };
+        onMounted(async () => {
+            await authGet()
+                .then((res) => {
+                    userId.value = res.user.id;
+                })
+                .catch(() => {
+                    router.push("/login");
+                });
         });
+        return {
+            userId,
+            goShopRegisterEdit,
+            goCategoryRegister,
+            logout,
+        };
+    },
 });
 </script>
 

@@ -52,4 +52,11 @@ type PageNationHotpepperData = {
     total: number,
     links: any
 }
-export { Categorie, RestaurantData, PageNationData, PageNationHotpepperData }
+type CsvData = {
+    name: string,
+    review: number,
+    comment: string,
+    categories?: any,
+    listId?: number,
+}
+export { Categorie, RestaurantData, PageNationData, PageNationHotpepperData, CsvData }
