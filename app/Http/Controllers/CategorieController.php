@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categorie;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CategorieRequest;
 
@@ -19,7 +18,10 @@ class CategorieController extends Controller
      */
     public function index()
     {
-        return Categorie::where('user_id', Auth::id())->orderByDesc('id')->get();
+        $categorie = Categorie::where('user_id', Auth::id())->orderByDesc('id')->get();
+        return $categorie
+            ? response()->json($categorie, 201)
+            : response()->json([], 500);
     }
 
     /**

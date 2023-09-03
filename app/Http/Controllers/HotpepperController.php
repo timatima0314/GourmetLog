@@ -37,6 +37,9 @@ class HotpepperController extends Controller
         $collect_shops = collect($shop);
         $paginate = $collect_shops->paginate(10);
 
-        return $paginate;
+        return $paginate
+        ? response()->json($paginate, 201)
+        : response()->json([], 500);
+
     }
 }

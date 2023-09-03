@@ -24,7 +24,10 @@ class RestaurantController extends Controller
         foreach ($items as $item) {
             $item->categories;
             }
-        return $items;
+        return $items
+        ? response()->json($items, 201)
+        : response()->json([], 500);
+
     }
     /**
      * Display a listing of the resource.
@@ -36,7 +39,10 @@ class RestaurantController extends Controller
             $item->categories;
             }
 
-        return $items;
+        return $items
+        ? response()->json($items, 201)
+        : response()->json([], 500);
+
 
     }
 

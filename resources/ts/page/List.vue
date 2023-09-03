@@ -114,6 +114,7 @@
                         type="buttan"
                         @click="changePageNation"
                         :data-label="link.label"
+                        :class="[current_page == link.label ? 'current' : null]"
                     >
                         {{ link.label }}
                     </div>
@@ -463,5 +464,8 @@ onMounted(async () => {
     :hover {
         text-decoration: underline;
     }
+}
+.current {
+    color: blue;
 }
 </style>
